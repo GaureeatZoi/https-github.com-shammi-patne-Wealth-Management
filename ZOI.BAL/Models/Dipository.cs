@@ -7,8 +7,8 @@ using System.ComponentModel;
 
 namespace ZOI.BAL.Models
 {
-	[Table("Tbl_Dipositories")]
-	public class Dipository : Base.BaseModel
+	[Table("tbl_Depositories")]
+	public class Depository : Base.BaseModel
 	{
 		public long Id { get; set; }
 
@@ -18,7 +18,7 @@ namespace ZOI.BAL.Models
 		[DisplayName("DP Code")]
 		public string DPCode { get; set; }
 
-		[Required(ErrorMessage = "Dipository Name is required.")]
+		[Required(ErrorMessage = "Depository Name is required.")]
 		[StringLength(100, MinimumLength = 10)]
 		[DisplayName("DP Name")]
 		public string DPName { get; set; }

@@ -6,15 +6,15 @@ using ZOI.BAL.Models;
 
 namespace ZOI.BAL.ViewModels
 {
-    public class DipositoryViewModel : BaseViewModel
+    public class DepositoryViewModel : BaseViewModel
     {
-        public DipositoryViewModel()
+        public DepositoryViewModel()
         {
-            this.dipository = new Dipository();
+            this.Depository = new Depository();
            
         }
 
-        public Dipository dipository { get; set; }
+        public Depository Depository { get; set; }
 
         public IEnumerable<SelectListItem> CountryList { get; set; }
         public IEnumerable<SelectListItem> StateList { get; set; }

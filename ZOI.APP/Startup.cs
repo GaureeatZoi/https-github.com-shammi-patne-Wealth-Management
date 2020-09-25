@@ -154,7 +154,7 @@ namespace ZOI.APP
 
             services.AddScoped<IProductTypeService, ProductTypeService>();
 
-            services.AddScoped<IDipositoryService, DipositoryService>();
+         //   services.AddScoped<IDipositoryService, DipositoryService>();
 
             services.AddScoped<IHolidayService, HolidayService>();
 
@@ -276,8 +276,14 @@ namespace ZOI.APP
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
-                    name: "default",
-                 pattern: "{controller=Account}/{action=Login}/{id?}");
+                   name: "default",
+                pattern: "{controller=ClientFolio}/{action=Index}/{id?}");
+
+
+
+                //endpoints.MapControllerRoute(
+                //    name: "default",
+                // pattern: "{controller=Account}/{action=Login}/{id?}");
             });
         }
 

@@ -58,7 +58,7 @@ namespace ZOI.BAL.Utilites
             public const string GetMenus = "Admin_GetMenuList";
             public const string GetBankBranchSummary = "Admin_GetBankBranchSummary";
             public const string GetEquityBrokerSummary = "Admin_GetEquityBrokerSummary";
-            public const string GetDipositorySummary = "Admin_GetDipository";
+            public const string GetDepositorySummary = "Admin_GetDepository";
 
             // PinCodeMaster
             public const string GetPincodeSummary = "Admin_GetPincode";

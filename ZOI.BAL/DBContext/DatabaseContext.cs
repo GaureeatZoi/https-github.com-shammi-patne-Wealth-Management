@@ -63,7 +63,7 @@ namespace ZOI.BAL.DBContext
 
         public DbSet<Country> Country { get; set; }
 
-        public DbSet<Dipository> Dipository { get; set; }
+        public DbSet<Depository> Depository { get; set; }
 
         public DbSet<Holidays> Holiday { get; set; }
 

@@ -16,81 +16,101 @@ using ZOI.APP.Filters;
 
 namespace ZOI.APP.Controllers
 {
-    public class CountryController : BaseController
+    public class CountryController1 : BaseController
     {
         private readonly ICountryService _CountryService;
 
+        
 
-        public CountryController(ICountryService countryService, IServiceFactory serviceFactory) : base(serviceFactory)
+        [Obsolete]
+        private readonly IHostingEnvironment _HostingEnvironment;
+
+        [Obsolete]
+        public CountryController1( ICountryService countryService, IHostingEnvironment HostingEnvironment, IServiceFactory serviceFactory) : base(serviceFactory)
         {
             _CountryService = countryService;
+            _HostingEnvironment = HostingEnvironment;
         }
 
         public Country Country { get; set; }
-
-        public IActionResult IsCountryExists(string name)
+              
+        public  IActionResult IsCountryExists(string name)
         {
             JsonResponse resp = new JsonResponse();
             if (!_CountryService.IsCountryExists(name))
             {
-                resp.Status = Constants.ResponseStatus.Success;
+                 resp.Status = Constants.ResponseStatus.Success;
             }
             else
             {
-                resp.Message = Constants.ControllerMessage.Data_Exsists;
+                 resp.Message = Constants.ControllerMessage.Data_Exsists;
+
             }
             return Json(resp);
 
         }
 
-        //[TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Read" })]
+       // [TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Read" })]
         public IActionResult SummaryView()
         {
             CountryViewModel model = new CountryViewModel();
             InitAccessModel(model);
             return View(model);
+
+
         }
 
+      
 
 
 
-
-        //[TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Read" })]
+       // [TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Read" })]
         public IActionResult GetAll()
-        {
-            // gets  listing data
+        { // gets  listing data
+
+
             return Json(_CountryService.Summary());
         }
 
 
 
         [HttpGet]
-        //[TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Read" })]
+       // [TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Read" })]
         public IEnumerable<Country> GetAllCountries()
         {
             IEnumerable<Country> CountryData;
-            CountryData = _CountryService.ListAll();
+           CountryData = _CountryService.ListAll();
             HttpContext.Session.SetObject("ExportData", CountryData);
             return CountryData;
+         //   return _CountryService.ListAll();
         }
 
         [HttpGet]
-        //[TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Write" })]
+      // [TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Write" })]
         public IActionResult Index(long id)
         {
             CountryViewModel model = new CountryViewModel();
-            InitAccessModel(model);
-            model.TimeZoneList = _CountryService.GetTimeZoneList();
-            if (id != 0)
+           
+            if ( id == 0)
             {
-                model.country = _CountryService.Find(id);
-                if(model.country.Id == 0)
-                    return RedirectToAction("DateNotFound", "Home");
-            }            
-            return View(model);
+                model.country.Id = 0;
+                model.TimeZoneList = _CountryService.GetTimeZoneList();
+                return View(model);
+            }
+            model.country = _CountryService.Find(id);
+            if (model.country != null)
+            {
+                model.country.Id = id;
+                model.TimeZoneList = _CountryService.GetTimeZoneList();
+                return View(model);
+            }
+            else
+            { return NotFound(); }
+            
+            
         }
 
-        //[TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Write" })]
+       // [TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Write" })]
         public IActionResult AddUpdate(CountryViewModel model)
         {
             JsonResponse resp = new JsonResponse();
@@ -106,7 +126,7 @@ namespace ZOI.APP.Controllers
             }
         }
 
-        //[TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Write" })]
+       // [TypeFilter(typeof(AuthorizeAction), Arguments = new object[] { "Write" })]
         public IActionResult ChangeStatus(long ID, bool Status)
         {  // changes active deacivate status
             return Json(_CountryService.Deactivate(ID, Status));
@@ -134,7 +154,7 @@ namespace ZOI.APP.Controllers
                     // appSumaryModel.data.First().GetType().GetProperties().Where(i => i.CanRead).Select(i => i.Name).ToArray();
                     list.ForEach(line =>
                     {
-                        data = list.Count.ToString();
+                        data = list.Count.ToString();  
                         data += "," + line.CountryName;
                         data += "," + line.Currency;
                         data += "," + line.CurrencySymbolUnicode;
@@ -158,14 +178,14 @@ namespace ZOI.APP.Controllers
             {
                 var stream = new MemoryStream();
 
-                var columnHeader = new string[5] { "Country Name", "Currency", "Currency Symbol Unicode", "TimeZone", "IsActive" };
+                var columnHeader = new string[5] { "Country Name", "Currency","Currency Symbol Unicode", "TimeZone", "IsActive" };
                 if (list.Count > 0)
                 {
                     // columnHeader = GetHeaderValues(list.First());// appSumaryModel.data.First().GetType().GetProperties().Where(i => i.CanRead).Select(i => i.Name).ToArray();
                     ExcelPackage.LicenseContext = LicenseContext.Commercial;
                     using (var package = new ExcelPackage(stream))
                     {
-                        var workSheet = package.Workbook.Worksheets.Add("State Master Data");
+                        var workSheet = package.Workbook.Worksheets.Add("State Master Data"); 
                         int totalRows = list.Count;
                         for (var j = 0; j < columnHeader.Length; j++)
                         {

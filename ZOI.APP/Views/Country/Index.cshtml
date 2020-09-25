@@ -16,175 +16,151 @@
 }
 
 
-<form>
-    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
-        <div class="content-body">
-            <div class="card p-t-20">
-                <div class="card-body">
-                    <div class="row">
-                        @if (Model.country.Id != 0)
-                        {
-                            <Input hidden asp-for="country.Id" />
-                        }
 
-                        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
-                            <div class="form-group is-empty">
-                                @Html.DisplayNameFor(e => e.country.CountryName)<span style="color: red"><strong>&nbsp;*</strong></span>
-                                @if (Model.country.Id != 0)
-                                {
-                                    @Html.TextBoxFor(e => e.country.CountryName, htmlAttributes: new { @class = "form-control", @onkeypress = "AllowAlpha()", @id = "txt_name", @readonly = true })
-                                }
-                                else
-                                {
-                                    @Html.TextBoxFor(e => e.country.CountryName, htmlAttributes: new { @class = "form-control", @onkeypress = "AllowAlpha()", @id = "txt_name" })
-                                }
-                                @Html.ValidationMessageFor(e => e.country.CountryName, "", new { @class = "field-validation-error" })
-                                <span class="txt_name field-validation-error" style="color:red"></span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
-                            <div class="form-group is-empty">
+<div class="container-fluid" id="div_content" style="display:none">
+    <div class="card">
+        <div class="card-body">
+            <form>
+                <div class="row">
+                    @if (Model.country.Id != 0)
+                    {
+                        <Input hidden asp-for="country.Id" />
+                    }
 
-                                @Html.DisplayNameFor(e => e.country.TimeZone)<span style="color: red"><strong>&nbsp;*</strong></span>
-                                @Html.DropDownListFor(e => e.country.TimeZone, Model.TimeZoneList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_role", @class = "form-control select2-container--material", @style = "width: 100%" })
-                                <br style="line-height:1em" />
+                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.country.CountryName)<span class="mandatory">*</span>
+                            @if (Model.country.Id != 0)
+                            {
+                                @Html.TextBoxFor(e => e.country.CountryName, htmlAttributes: new { @class = "form-control", @onkeypress = "AllowAlpha()", @id = "txt_name", @readonly = true })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(e => e.country.CountryName, htmlAttributes: new { @class = "form-control", @onkeypress = "AllowAlpha()", @id = "txt_name" })
+                            }
+                            @Html.ValidationMessageFor(e => e.country.CountryName, "", new { @class = "field-validation-error" })
+                            <span class="txt_name field-validation-error" style="color:red"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                        <div class="form-group is-empty">
 
-                                <span asp-validation-for="country.TimeZone" class="text-danger"></span>
-                            </div>
+                            @Html.DisplayNameFor(e => e.country.TimeZone)<span class="mandatory">*</span>
+                            @Html.DropDownListFor(e => e.country.TimeZone, Model.TimeZoneList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_role", @class = "form-control select2-container--material", @style = "width: 100%" })
+                           <br />
+                            <span asp-validation-for="country.TimeZone" style="margin-top: 0px !important;" class="text-danger"></span>
                         </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
-                                <div class="form-group is-empty">
-                                    @Html.DisplayNameFor(e => e.country.Currency)<span style="color: red"><strong>&nbsp;*</strong></span>
-                                    @Html.TextBoxFor(e => e.country.Currency, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlpha()" })
-                                    @Html.ValidationMessageFor(e => e.country.Currency, "", new { @class = "field-validation-error" })
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
-                                <div class="form-group is-empty">
-                                    @Html.DisplayNameFor(e => e.country.CurrencySymbolUnicode)<span style="color: red"><strong>&nbsp;*</strong></span>
-                                    @Html.TextBoxFor(e => e.country.CurrencySymbolUnicode, htmlAttributes: new { @class = "form-control" })
-                                    @Html.ValidationMessageFor(e => e.country.CurrencySymbolUnicode, "", new { @class = "field-validation-error" })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
-                                <div class="form-group is-empty">
-                                    @Html.DisplayNameFor(e => e.country.CountryCode)<span style="color: red"><strong>&nbsp;*</strong></span>
-                                    @Html.TextBoxFor(e => e.country.CountryCode, htmlAttributes: new { @class = "form-control", @Maxlength = "4" })
-                                    @Html.ValidationMessageFor(e => e.country.CountryCode, "", new { @class = "field-validation-error" })
-                                </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
-                                <div class="input-group">
-                                    <div class="checkbox">
-                                        <label style="font-size:14px !important">
-                                            @Html.DisplayNameFor(e => e.country.IsActive)
-                                            @Html.CheckBoxFor(e => e.country.IsActive, htmlAttributes: new { @class = "checkbox" })
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="text-center" style="margin:10px;">
-                                @if (Model.country.Id != 0)
-                                {<input type="button" id="btn_update" class="btn btn-success " value="Update" />
-                                }
-                                else
-                                { <input type="button" id="btn_add" class="btn btn-success " value="Add" />
-                                    <input type="Reset" id="btn_reset" class="btn btn-warning " value="Resset" />
-
-                                }
-                            </div>
-                        </div>
-
                     </div>
                 </div>
-            </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.country.Currency)<span class="mandatory">*</span>
+                            @Html.TextBoxFor(e => e.country.Currency, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlpha()" })
+                            @Html.ValidationMessageFor(e => e.country.Currency, "", new { @class = "field-validation-error" })
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.country.CurrencySymbolUnicode)<span class="mandatory">*</span>
+                            @Html.TextBoxFor(e => e.country.CurrencySymbolUnicode, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(e => e.country.CurrencySymbolUnicode, "", new { @class = "field-validation-error" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.country.CountryCode)<span class="mandatory">*</span>
+                            @Html.TextBoxFor(e => e.country.CountryCode, htmlAttributes: new { @class = "form-control", @Maxlength = "4" })
+                            @Html.ValidationMessageFor(e => e.country.CountryCode, "", new { @class = "field-validation-error" })
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                        <div class="input-group">
+                            <div class="checkbox">
+                                <label style="font-size:14px !important">
+                                    @Html.DisplayNameFor(e => e.country.IsActive)
+                                    @Html.CheckBoxFor(e => e.country.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-center" style="margin:10px;">
+                        @if (Model.country.Id != 0)
+                        {<input type="button" onclick="SaveData()" class="btn btn-success " value="Update" />
+                        }
+                        else
+                        {
+                            <input type="button" onclick="SaveData()" class="btn btn-success " value="Add" />
+                            <input type="Reset" onclick="Reset()" class="btn btn-warning " value="Resset" />
+                        }
+                    </div>
+                </div>
+            </form>
         </div>
-</form>
+    </div>
+</div>
+
 
 @section scripts{
     <script>
-        var valid = false;
-        $(document).ready(function () {
+        var valid = true;
+        $(document).ready(function ()
+        {
             $(".chart-loader").attr("style", "display:none");
-            $("#div_form").show();
-
-            $("#btn_reset").click(function () {
-                $("#div_form").trigger("reset");
-            });
-
-            $("#btn_add").click(function () {
-                if ($("form").valid() && valid) {
-                    SaveData();
-                }
-            });
-
-            $("#btn_update").click(function () {
-                if ($("form").valid()) {
-                    SaveData();
-                }
-            });
-
-
+            $("#div_content").attr("style", "display:block");
+        });
 
         // Check the duplicate name value on change.
-            $("#txt_name").on("change", function () {
-                getAjax("@Url.Action("IsCountryExists")", { name: $("#txt_name").val() }, function (result) {
-                    switch (result.status) {
-                        case "F":
-                            $(".txt_name").empty().text("The Name was already exsits.");
-                            $(".txt_name").show();
-                            valid = false;
-                            break;
-                        case "S":
-                            $(".txt_name").hide();
-                            valid = true;
-                            break;
-                        default:
-                    }
-                }, function (request, error) {
-                    alert(" Can't do because: " + error);
-                })
-            });
-
-            function SaveData() {
-            var object = $("form").serializeArray();
-            var json = {};
-            $.each(object, function () {
-                if (json[this.name] == undefined) {
-                    json[this.name] = this.value;
+        $("#txt_name").on("change", function () {
+            getAjax("@Url.Action("IsCountryExists")", { name: $("#txt_name").val() }, function (result) {
+                switch (result.status) {
+                    case "F":
+                        $(".txt_name").empty().text("The Name was already exsits.");
+                        $(".txt_name").show();
+                        valid = false;
+                        break;
+                    case "S":
+                        $(".txt_name").hide();
+                        valid = true;
+                        break;
+                    default:
                 }
-            });
-            getAjax("@Url.Action("AddUpdate")", json,
-                function (result) {
-                    if (result.status == "F") {
-                        $("#notification").empty().text(result.message);
-                        $("#notification_modal").modal("show").on(alignModal);
-                        setTimeout(function () {
-                            $('#notification_modal').slideUp("slow").modal("hide");
-                        }, 3000);
-                        Message = null;
-                    }else {
-                        window.localStorage.setItem("Message", result.message);
-                        window.location.href = "@Url.Action("SummaryView")"
-                    }
-                }, function (request, error) {
-                    alert(" Can't do because: " + error);
+            }, function (request, error) {
+                show_notification("Can't do because: " + error);
             })
+        });
 
-            function alignModal() {
-                var modalDialog = $(this).find(".modal-dialog");
-                modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+        function SaveData() {
+            if ($("form").valid() && valid) {
+                var object = $("form").serializeArray();
+                var json = {};
+                $.each(object, function () {
+                    if (json[this.name] == undefined) {
+                        json[this.name] = this.value;
+                    }
+                });
+                getAjax("@Url.Action("AddUpdate")", json,
+                    function (result) {
+                        if (result.status == "F") {
+                            show_notification(result.message);
+                        } else {
+                            window.localStorage.setItem("Message", result.message);
+                            window.location.href = "@Url.Action("SummaryView")"
+                        }
+                    }, function (request, error) {
+                        show_notification("Can't do because: " + error);
+                    });
             }
+            else {
+                show_notification("Form not valid");
             }
+        }
 
-    });
     </script>
     <Partial name="_ValidationScriptsPartial.cshtml" />
 }
