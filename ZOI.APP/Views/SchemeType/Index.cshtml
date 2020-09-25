@@ -1,0 +1,159 @@
+﻿@model ZOI.BAL.ViewModels.SchemeTypeViewModel
+@using ZOI.BAL.Utilites
+
+@{
+    if (Model.schemeType.ID != 0)
+    {
+        ViewData["Title"] = "Update Scheme Type";
+    }
+    else
+    {
+        ViewData["Title"] = "Add Scheme Type";
+    }
+
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+
+
+    <form>
+        <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+            <div class="content-body">
+                <div class="card p-t-20">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                            <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                @Html.DisplayNameFor(e => e.schemeType.Name)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.schemeType.ID != 0)
+                                {@Html.TextBoxFor(e => e.schemeType.Name, htmlAttributes: new { @class = "form-control", @id = "txt_name", @readonly = "true" })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(e => e.schemeType.Name, htmlAttributes: new { @class = "form-control", @id = "txt_name" })
+                            }
+                                @Html.HiddenFor(e => e.schemeType.ID, htmlAttributes: new { @class = "form-control", @id = "hdn_id" })
+                                @Html.ValidationMessageFor(e => e.schemeType.Name, "", new { @class = "field-validation-error2" })
+
+                                <span class="txt_name field-validation-error" style="color:red"></span>
+
+                            </div>
+                          
+
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        <label style="font-size:16px ">
+                                            @Html.LabelFor(e => e.schemeType.IsActive, "Is Active")
+                                            @Html.CheckBoxFor(e => e.schemeType.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="text-center" style="margin:10px;">
+                                @if (Model.schemeType.ID != 0)
+                                {<button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                        Update
+                                    </button>
+                                }
+                                else
+                                { <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                        Add
+                                    </button>
+                                    <button type="button" class="btn btn-warning" id="btn_reset">
+                                        Reset
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+@section scripts{
+    <script src="~/EventManagement/js/utility.js"></script>
+    <script>
+         var valid = true;
+        $(document).ready(function () {
+        $(".chart-loader").attr("style", "display:none");
+
+        $("#div_form").show();
+
+
+        $("#btn_reset").click(function () {
+            $("#div_form").trigger("reset");
+        });
+
+        $("#txt_name").on("change", function () {
+            getAjax("@Url.Action("IsExstis")", { name: $("#txt_name").val(), ID: $("#hdn_id").val() }, function (result) {
+                switch (result.status) {
+                    case "F":
+                        $(".txt_name").empty().text("The Scheme Type already exsits.");
+                        $(".txt_name").show();
+                        valid = false;
+                        break;
+                    case "S":
+                        $(".txt_name").hide();
+                        valid = true;
+                        break;
+                    default:
+                }
+            }, function (request, error) {
+                alert(" Can't do because: " + error);
+            })
+        });
+        });
+
+
+
+          function SaveData() {
+                if ($("form").valid() && valid) {
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+
+                    var object = $("form").serializeArray();
+                    var json = {};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    getAjax("@Url.Action("AddUpdate")", json,
+                        function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $("#notification").empty().text(result.message);
+                            $("#notification_modal").modal("show").on(alignModal);
+                            setTimeout(function () {
+                                $('#notification_modal').slideUp("slow").modal("hide");
+                            }, 3000);
+                            Message = null;
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                            break;
+                        case "S":
+                            window.localStorage.setItem("Message", result.message);
+                            window.location.href = "@Url.Action("SummaryView")"
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                            alert(" Can't do because: " + error);
+                    })
+                }
+        }
+
+
+        function alignModal() {
+            var modalDialog = $(this).find(".modal-dialog");
+            modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+        }
+    </script>
+    <Partial name="_ValidationScriptsPartial.cshtml" />
+}

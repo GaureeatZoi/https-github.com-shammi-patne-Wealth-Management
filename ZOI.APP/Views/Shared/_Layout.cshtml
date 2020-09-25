@@ -1,0 +1,559 @@
+﻿@model ZOI.BAL.ViewModels.BaseViewModel
+@using ZOI.BAL.Models
+@using ZOI.BAL.Utilites
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@inject SignInManager<ApplicationUser> signManager;
+@inject UserManager<ApplicationUser> userManager;
+@{
+    IEnumerable<CurrentUserMenu> menus = Model.Menus;
+    IEnumerable<MenuPermission> menuPermission = Model.MenuPermissions;
+    var userId = string.Empty;
+    var MailID = string.Empty;
+    var Role = string.Empty;
+    if (signManager.IsSignedIn(User))
+    {
+        var user = await userManager.GetUserAsync(User);
+        userId = user.Id;
+        MailID = user.Email;
+        Role = "";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" href="~/Assets/images/logo.png" type="image/x-icon" sizes="256x256" />
+    <script src="https://code.iconify.design/1/1.0.4/iconify.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    @*Like Assert*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700|Poppins:300,400,500,600" rel="stylesheet">
+    <link href="~/Sapphire/css/vendor.bundle.css" rel="stylesheet" />
+    <link href="~/Sapphire/css/app.bundle.css" rel="stylesheet" />
+    <link href="~/Sapphire/css/theme-a.css" rel="stylesheet" />
+    <link href="~/Sapphire/css/toastr.css" rel="stylesheet" />
+    <link href="~/jqueryui/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Sapphire/css/site.css" rel="stylesheet" />
+    <link href="~/Sapphire/css/layout-style.css" rel="stylesheet" />
+    <link href="~/Sapphire/css/dashboard-responsive.css" rel="stylesheet" />
+    <link href="~/Assets/css/Loader.css" rel="stylesheet" />
+    <link href="~/select2/css/select2.css" rel="stylesheet" />
+    <link href="~/Assets/css/Select2MaterialDesign.css" rel="stylesheet" />
+    <link href="~/Assets/css/multi-select.css" rel="stylesheet" />
+    <style>
+
+        /*to make string as capitalize*/
+        .capitalise {
+            text-transform: capitalize;
+        }
+
+        #app_sidebar-left {
+            cursor: pointer;
+        }
+
+        .nav-sub {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+            .nav-sub ::-webkit-scrollbar {
+                height: 5px !important;
+                width: .4em;
+                border-radius: 10px;
+                position: absolute;
+                margin-left: -2em;
+            }
+
+            .nav-sub ::-webkit-scrollbar-thumb {
+                overflow: visible;
+                background-color: lightgray;
+                margin-top: 4em !important;
+            }
+
+        .form-group {
+            padding-bottom: 25px !important;
+            margin: 0px 0 0;
+        }
+
+        .btn-danger {
+            background-color: transparent !important;
+            color: #ef5350 !important;
+        }
+
+        .btn-info {
+            background-color: transparent !important;
+            color: #FFF !important;
+        }
+
+        .checkbox .checkbox-material, label.checkbox-inline .checkbox-material {
+            vertical-align: middle;
+            position: relative;
+            top: 3px;
+            padding-left: 15px !important;
+        }
+
+            .checkbox .checkbox-material:before, label.checkbox-inline .checkbox-material:before {
+                display: block;
+                position: absolute;
+                top: -5px;
+                left: 15px !important;
+                content: "";
+                background-color: rgba(0,0,0,.84);
+                height: 20px;
+                width: 20px;
+                border-radius: 100%;
+                z-index: 1;
+                opacity: 0;
+                margin: 0;
+                transform: scale3d(2.3,2.3,1);
+            }
+
+        .field-validation-error {
+            color: red;
+            position: absolute;
+            margin: -13px 0 0 !important;
+            font-size: smaller;
+        }
+        .field-duplicate-validation{
+            color: red;
+            position: absolute;
+            margin: 3px 0 0 !important;
+            font-size: smaller;
+        }
+
+        .field-validation-error1 {
+            color: red;
+            position: absolute;
+            margin: -3px 0 0 !important;
+            font-size: smaller;
+        }
+
+        /* Amar Ramamoorthy*/
+        #logo_wrapper {
+            width: 200px;
+        }
+
+            #logo_wrapper:after {
+                width: 170px;
+            }
+
+        .backburger-icon {
+            margin-left: 0em;
+        }
+
+        @@media(max-width: 768px) {
+            #logo_wrapper {
+                position: initial;
+                width: 170px !important;
+            }
+
+            .backburger-icon {
+                margin-left: 2em;
+            }
+
+            .project-name {
+                display: none;
+            }
+        }
+
+        .section {
+            display: block;
+            position: relative;
+            overflow: hidden;
+            padding: 70px 0;
+        }
+
+            .section.wb {
+                background-color: #ffffff;
+            }
+
+            .section.lb {
+                background-color: #f2f3f5;
+            }
+
+            .section.db {
+                background-color: #111111;
+            }
+
+        .section-title {
+            display: block;
+            position: relative;
+            margin-bottom: 60px;
+        }
+
+            .section-title p {
+                color: #999;
+                font-weight: 400;
+                font-size: 18px;
+                line-height: 23px;
+                margin: 0;
+            }
+
+            .section-title h3 {
+                font-size: 38px;
+                font-weight: 500;
+                line-height: 62px;
+                margin: 0 0 25px;
+                padding: 0;
+                text-transform: none;
+            }
+
+        .chart-loader {
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="app_wrapper">
+        <header id="app_topnavbar-wrapper">
+            <nav role="navigation" class="navbar topnavbar">
+                <div class="nav-wrapper">
+                    <div id="logo_wrapper" class="nav navbar-nav">
+                        <ul>
+                            <li class="logo-icon">
+                                <a href="@Url.Action("Index","DashBoard")">
+                                    <div class="logo">
+                                        <img src="~/Assets/images/logo.png" style="width: 40px !important;height: 42px !important;margin-left:1em" />
+                                    </div>
+                                    <h1 class="brand-text project-name" title="DashBoard">SAPPHIRE</h1>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <ul class="nav navbar-nav left-menu ">
+                        <li class="menu-icon backburger-icon">
+                            <a href="javascript:void(0)" role="button" data-toggle-state="app_sidebar-menu-collapsed" data-key="leftSideBar">
+                                <i class="mdi mdi-backburger" title="Menus"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav pull-right text-left" style="text-align-last: left;">
+                        <li class="dropdown hidden-xs hidden-sm ">
+                            <h5 class="font-weight-500 userprofile-username">@User.Identity.Name</h5>
+                            <h6><i class="zmdi zmdi-email"></i>&nbsp;@MailID</h6>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        @*Navigation bar left*@
+        <aside id="app_sidebar-left">
+            <nav id="app_main-menu-wrapper">
+                <div class="sidebar-inner sidebar-push">
+                    <div class="card profile-menu" id="profile-menu">
+                        <div class="card-heading card-img alt-heading">
+                            <div class="profile">
+                                <div class="card-heading card-background" id="card_img_02">
+                                </div>
+                                <a href="javascript:void(0)" class="info" data-profile="open-menu">
+                                    <span>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        <ul class="submenu">
+                            <li>
+                                <a href="@Url.Action("Profile","Account")"><i class="zmdi zmdi-account"></i> Profile</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- #sidebar-menu -->
+                    <ul id="sidebar-menu" class="nav nav-pills nav-stacked">
+                        @if (Model.Menus != null)
+                        {
+                            foreach (CurrentUserMenu menu in Model.Menus.Where(e => e.ParentMenuId == 0 && e.SubParentMenuID == 0 && e.IsSubMenu == false).OrderBy(e => e.MenuOrder))
+                            {
+                                long previous = 1;
+                                var icon = menu.MenuIcon == null ? "fa-gear" : menu.MenuIcon;
+                                <li class="@(menu.MenuName!=@Constants.Dashboard ? "nav-dropdown" : "")">
+                                    @if (menu.MenuName != Constants.Dashboard)
+                                    {
+                                        <a @(string.IsNullOrEmpty(menu.ControllerName) ? "" : "href=" + @Url.Action(menu.ActionName, menu.ControllerName) + "")>
+                                            <i class="zmdi @icon" style="font-size: 19px;">
+                                            </i>
+                                            @menu.MenuName
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("Index", "Dashboard")">
+                                            <i class="zmdi @icon">
+                                            </i>
+                                            @menu.MenuName
+                                        </a>
+                                    }
+                                    @if (Model.Menus.Where(e => e.ParentMenuId == menu.ID && e.IsSubMenu).Count() > 0)
+                                    {
+                                        <ul class="nav-sub">
+
+                                            @foreach (CurrentUserMenu subParentMenu in Model.Menus.Where(e => e.ParentMenuId == menu.ID && e.IsSubMenu).OrderBy(e => e.MenuOrder))
+                                            {
+                                                long previous_groupID = 1;
+                                                //  Sub-Menu  render ..
+                                                var submenuicon = subParentMenu.MenuIcon == "" ? "fa-gear" : subParentMenu.MenuIcon;
+
+                                                <li class="nav-dropdown">
+                                                    <a @(string.IsNullOrEmpty(menu.ControllerName) ? "" : "href=" + @Url.Action(menu.ActionName, menu.ControllerName) + "")>
+                                                        <i class="zmdi @submenuicon" style="font-size: 19px;">
+                                                        </i>
+                                                        @subParentMenu.MenuName
+                                                    </a>
+                                                    <ul id="sidebar-submenu" class="nav nav-pills nav-stacked">
+                                                        @* Child-Menu for the Sub-Menu *@
+                                                        @foreach (CurrentUserMenu subMenu in Model.Menus.Where(e => e.SubParentMenuID == subParentMenu.ID).OrderBy(e => e.GroupID).ThenBy(e => e.MenuOrder))
+                                                        {
+
+                                                            var childmenuicon = subMenu.MenuIcon == "" ? "fa-gear" : subMenu.MenuIcon;
+                                                            if (previous_groupID == subMenu.GroupID || Model.Menus.Where(e => e.ParentMenuId == menu.ID).Select(e => e.GroupID).Distinct().Count() == 1)
+                                                            {
+                                                                <li>
+                                                                    <a onclick="Loader()" @(string.IsNullOrEmpty(subMenu.ControllerName) ? "" : "href=" + Url.Action(subMenu.ActionName, subMenu.ControllerName))>
+                                                                        <i class="zmdi @childmenuicon"></i>
+                                                                        @subMenu.MenuName
+
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li>
+                                                                    <hr style=" margin-left: 35px;border-top: 1px solid #0a0a0a;">
+                                                                    <a onclick="Loader()" @(string.IsNullOrEmpty(subMenu.ControllerName) ? "" : "href=" + Url.Action(subMenu.ActionName, subMenu.ControllerName))>
+                                                                        <i class="zmdi @childmenuicon"></i>
+                                                                        @subMenu.MenuName
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            previous_groupID = subMenu.GroupID;
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+
+                                        </ul>
+                                    }
+                                    else if (Model.Menus.Where(e => e.ParentMenuId == menu.ID).Count() > 0)
+                                    {
+                                        @* Child Menus for the Parent-Menu *@
+                                        <ul class="nav-sub">
+                                            @foreach (CurrentUserMenu subMenu in Model.Menus.Where(e => e.ParentMenuId == menu.ID && e.IsSubMenu == false).OrderBy(e => e.GroupID).ThenBy(e => e.MenuOrder))
+                                            {
+                                                var childmenuicon = subMenu.MenuIcon == "" ? "fa-gear" : subMenu.MenuIcon;
+                                                if (previous == subMenu.GroupID || Model.Menus.Where(e => e.ParentMenuId == menu.ID).Select(e => e.GroupID).Distinct().Count() == 1)
+                                                {
+                                                    <li>
+                                                        <a onclick="Loader()" @(string.IsNullOrEmpty(subMenu.ControllerName) ? "" : "href=" + Url.Action(subMenu.ActionName, subMenu.ControllerName))>
+                                                            <i class="zmdi @childmenuicon"></i>
+                                                            @subMenu.MenuName
+                                                        </a>
+                                                    </li>
+                                                }
+                                                else
+                                                {
+                                                    <li>
+                                                        <hr style=" margin-left: 35px;border-top: 1px solid #0a0a0a;">
+                                                        <a onclick="Loader()" @(string.IsNullOrEmpty(subMenu.ControllerName) ? "" : "href=" + Url.Action(subMenu.ActionName, subMenu.ControllerName))>
+                                                            <i class="zmdi @childmenuicon"></i>
+                                                            @subMenu.MenuName
+                                                        </a>
+                                                    </li>
+                                                }
+                                                previous = subMenu.GroupID;
+
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        }
+                    </ul>
+                    <!-- #sidebar-menu -->
+                </div>
+            </nav>
+        </aside>
+
+        <section id="content_outer_wrapper">
+            <div id="content_wrapper">
+                <div id="header_wrapper" class="header-sm">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <header id="header">
+                                    @ViewData["Title"]
+                                    <ul class="card-actions icons right-top icon-center">
+                                        <li>
+                                            @if (ViewData["ActionId1"] != null)
+                                            {
+                                                <button type="button" id="@ViewData["ActionId1"]" onclick="window.location.href='@(ViewData["Url1"])'" class="btn btn-info btn-fab btn-fab-sm" title="@ViewData["ActionTitle1"]">
+                                                    <i class="zmdi @ViewData["ActionIcon1"]"></i>
+                                                </button>
+                                            }
+                                        </li>
+                                        <li>
+                                            @if (ViewData["ActionId"] != null)
+                                            {
+                                                <button type="button" id="@ViewData["ActionId"]" onclick="window.location.href='@(ViewData["Url"])'" class="btn btn-info btn-fab btn-fab-sm" title="@ViewData["ActionTitle"]">
+                                                    <i class="zmdi @ViewData["ActionIcon"]"></i>
+                                                </button>
+                                            }
+                                        </li>
+                                    </ul>
+
+                                </header>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content-body">
+                    <!-- #region    Loader.. -->
+                    <div class="text-center chart-loader">
+                        <div class="loader1">
+                            <span></span><span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <!-- #endregion -->
+                    @RenderBody()
+                </div>
+            </div>
+            <footer id="footer_wrapper" style="background-color:white !important;">
+                <div class="footer-content">
+                    <div class="row copy-wrapper">
+                        <div class="col-xs-12">
+                            <p class="copy">&copy; Copyright <time class="year"></time> Wealth Management - All Rights Reserved</p>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </section>
+
+    </div>
+
+    <!-- modal-content -->
+
+    <div class="modal fade" id="notification_modal" tabindex="-1" role="dialog" style="display:none" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body" id="notification_modal_body">
+                    <div class="row">
+                        <div class="col-sm-1" style="margin-left:30px">
+                            <div class="leftside">
+                                <span style="margin:9px" class="zmdi zmdi zmdi-check-circle zmdi-hc-2x"></span>
+                            </div>
+                        </div>
+                        <div class="col-sm-9" style="margin-top: -8px;">
+                            <div class="rightside">
+                                <h2 id="notification"></h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" data-dismiss="modal" class="btn btn-info btn-flat">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade in" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="modal-box">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="card m-0">
+                    <header class="card-heading p-b-20">
+                        <h4 class="modal-title" id="modal-header-name">Change Status</h4>
+                        <ul class="card-actions icons right-top">
+                            <li>
+                                <a href="javascript:void(0)" data-dismiss="modal" aria-label="Close">
+                                    <i class="zmdi zmdi-close"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </header>
+                </div>
+                <div class="modal-body">
+                    <p id="modal-body-content">
+                        <h3> Are you sure you need to change status ?.</h3>
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <button type="button" class="btn btn-default " data-dismiss="modal" id="modal-button-two"><span>No</span></button>
+                            <button type="button" class="btn btn-danger" id="btn_deactivate"><span>Yes</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- modal-content -->
+        </div>
+        <!-- modal-dialog -->
+    </div>
+
+
+    <!-- Modal===========================================================-->
+    <!-- BEGIN JAVASCRIPT -->
+    <script src="~/Assets/js/jquery.min.js"></script>
+    <script src="~/Sapphire/js/vendor.bundle.js"></script>
+    <script src="~/Sapphire/js/app.bundle.js"></script>
+    <script src="~/Sapphire/js/toastr.min.js"></script>
+    <script src="~/Assets/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/Assets/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <script src="~/jqueryui/jquery-ui.js"></script>
+    <script src="~/select2/js/select2.full.js"></script>
+    <script src="~/select2/js/select2.js"></script>
+    <script src="~/Sapphire/js/utility.js"></script>
+    <script src="~/Material Design/js/Validation.js"></script>
+    <script src="~/Assets/js/multi-selector.js"></script>
+    <script src="~/CoustomValidation.js"></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $(".select2-container--material").select2({
+                theme: "material",
+            });
+        });
+
+        function show_notification(message) {
+            $(".chart-loader").hide();
+            $("#div_form").css("filter", "opacity(100%)");
+            $("#notification").empty().text(message);
+            $("#notification_modal").modal("show").on(alignModal);
+            setTimeout(function () {
+                $('#notification_modal').slideUp("slow").modal("hide");
+            }, 3000);
+            message = null;
+        }
+
+        function Reset() {
+            location.reload(true);
+        }
+
+        function OpenModel(id, status) {
+            $("#btn_deactivate").attr("onclick", "Deactivate(" + id + "," + status + ")");
+            $('#exampleModalLong').modal("show");
+        }
+
+        function Loader() {
+            $(".chart-loader").show();
+            $("#content").css("filter", "opacity(30%)");
+            $("#div_form").css("filter", "opacity(30%)");
+        }
+
+        function alignModal() {
+            var modalDialog = $(this).find(".modal-dialog");
+            modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+        }
+
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

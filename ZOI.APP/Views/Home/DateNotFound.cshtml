@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "DateNotFound";
+}
+
+<div class="div_message" style="display:none">
+    <h1 class="display-4 text-center">Data Not Found</h1>
+</div>
+
+@section scripts{
+    <script>
+    $(document).ready(function () {
+        $(".chart-loader").hide();
+        $("#div_message").Show();
+    });
+    </script>
+}

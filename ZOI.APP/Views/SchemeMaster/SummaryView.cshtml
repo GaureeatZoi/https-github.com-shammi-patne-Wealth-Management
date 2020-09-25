@@ -1,0 +1,196 @@
+﻿@model ZOI.BAL.ViewModels.SchemeViewModel
+@{
+    ViewData["Title"] = "Scheme Summary";
+    @if (Model.CurrentMenuPermission.Write)
+    {
+        ViewData["ActionTitle"] = "Add Event";
+        ViewData["ActionIcon"] = "zmdi-plus";
+        ViewData["ActionId"] = "btn_add";
+        ViewData["URL"] = Url.Action("Index");
+    }
+}
+
+<div id="content" class="container-fluid" style="display: none">
+    <div class="content-body">
+        <div class="card p-t-40">
+            <div class="card-body">
+                <div class="row">
+                    @if (Model.CurrentMenuPermission.ExportCSV || Model.CurrentMenuPermission.ExportExcel || Model.CurrentMenuPermission.ExportPDF)
+                    {
+                        <text>
+                            <div class="dropdown col-3 pull-right">
+                                <button type="button" class="btn btn-fab btn-fab-sm btn-success btn-flat dropdown-toggle" data-toggle="dropdown" data-placement="right" title="Action">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </button>
+                                <ul class="dropdown-menu btn-primary dropdown-menu-left">
+                                    @if (Model.CurrentMenuPermission.ExportCSV)
+                                    {
+                                        <text>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=2">
+                                                <i class="fa fa-download"></i>  Export CSV
+                                            </a>
+                                        </li>
+                        </text>
+                    }
+                                    @if (Model.CurrentMenuPermission.ExportExcel)
+                                    {
+                                        <text>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=1">
+                                                    <i class="fa fa-download"></i>  Export Excel
+                                                </a>
+                                            </li>
+                                        </text>
+                                    }
+                                    @if (Model.CurrentMenuPermission.ExportPDF)
+                                    {
+                                        <text>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=1">
+                                                    <i class="fa fa-download"></i>  Export PDF
+                                                </a>
+                                            </li>
+                                        </text>
+                                    }
+                                </ul>
+                            </div>
+                            </text>
+                        }
+                </div>
+                <div class="row">
+                    <div class="card-body">
+                        <table id="tbl_scheme_masters" class="table table-striped  dt-responsive" cellspacing="0" style="width: 100%;">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            var Message = window.localStorage.getItem("Message");
+            localStorage.removeItem("Message");
+
+            if (Message != null) {
+                show_notification(Message);
+            } else {
+                $("#notification_modal").hide();
+            }
+            loadDataTable();
+        });
+
+        //  Load the datatable
+        function loadDataTable() {
+            DataTable = $('#tbl_scheme_masters').DataTable({
+                "ajax": {
+                     "url": "/SchemeMaster/Summary",
+                    "type": "GET",
+                    "dataSrc": "",
+                    "datatype": "json"
+                },
+                 "columns": [
+
+                     @if (Model.CurrentMenuPermission.Write)
+                                 {
+                                 <text>
+                     {
+                         "data": "schemeName", "orderable": false,
+                                        "render": function (data, type, row) {
+                                            var status_text = "",
+                                                status = true;
+                                            switch (row.schemeMaster.isActiveText) {
+                                                case "Active":
+                                                    status_text = "<i class='zmdi zmdi-eye-off' ></i> Deactivate";
+                                                    status = false;
+                                                    break;
+                                                case "InActive":
+                                                    status_text = "<i class='zmdi zmdi-eye' ></i> Activate";
+                                                    status = true;
+                                                    break;
+                                                default:
+                                            }
+                                            return `<div class="dropdown">
+                                                           <button type="button" class="btn btn-fab btn-fab-sm btn-success btn-flat dropdown-toggle" data-toggle="dropdown" data-placement="right" title="Action">
+                                                                <i class="fa fa-ellipsis-v"></i>
+                                                           </button>
+                                                            <ul class="dropdown-menu btn-primary dropdown-menu-left">
+                                                                <li><a class="dropdown-item" href="@Url.Action("Update")?ID=` + row.schemeMaster.id + `">
+                                                                    <i class="fa fa-pencil-square-o"></i>  Edit </a>
+                                                                </li>
+                                                                <li><a class="dropdown-item" onclick="OpenModel(` + row.schemeMaster.id +`,`+status +`)" style="cursor:pointer;">`+ status_text+`</a>
+                                                                </li>
+                                                            </ul>
+                                                    </div>`;
+                                        }
+                                    },
+                                    </text>
+                                 }
+                     { "data": "schemeMaster.rtaName",  'title':'Rta Name' },
+                     { "data": "schemeMaster.schemeName", 'title': 'Scheme Name' },
+                     //{ "data": "schemeMaster.schemeTypeName", 'title': 'Scheme Type Name' },
+                     { "data": "schemeMaster.amcName",  'title': 'AmcName' },
+                     //{ "data": "amfiCode", 'title': 'AMFI Code'},
+                     { "data": "schemeMaster.planName",  'title': 'Plan Name'},
+                     { "data": "schemeMaster.rtaCode",  'title': 'RTA Code'},
+                     { "data": "schemeMaster.optionTypeName",  'title': 'Option Type Name' },
+                     { "data": "schemeMaster.isActiveText",  'title': 'Status' },
+                     { "data": "schemeMaster.lastUpdatedDate",  'title': 'Last Updated' },
+
+                     { "data": "schemeRegistrationDetails.amfiCode", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeRegistrationDetails.isin", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeRegistrationDetails.maturityDate", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeRegistrationDetails.nseSymbol", 'title': 'Last Updated', 'visible': false},
+                     { "data": "schemeRegistrationDetails.bseCode", 'title': 'Last Updated', 'visible': false},
+                     { "data": "schemeRegistrationDetails.refISIN", 'title': 'Last Updated', 'visible': false },
+
+
+                     { "data": "schemeTransactionDetails.isRecurring", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeTransactionDetails.sip", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeTransactionDetails.stp", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeTransactionDetails.swp", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeTransactionDetails.demat", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeTransactionDetails.includedUnitsOfExDate", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeTransactionDetails.sipDate", 'title': 'Last Updated', 'visible': false },
+                     { "data": "schemeTransactionDetails.stpDate", 'title': 'Last Updated', 'visible': false },
+                ],
+                "language": {
+                    "emptyTable": "no data found"
+                },
+                "width": "100%"
+
+            });
+            $(".chart-loader").attr("style", "display:none");
+            $("#content").attr("style", "display:block");
+        }
+
+        function OpenModel(id, status) {
+            $("#btn_deactivate").attr("onclick", "Deactive(" + id + "," + status + ")");
+            $('#exampleModalLong').modal("show");
+
+        }
+        //  Change the status.
+        function Deactive(id, status) {
+            getAjax("@Url.Action("ChangeStatus")", { ID: id,Status:status},
+                function (result) {
+                    if (result.status = "S") {
+                        window.localStorage.setItem("Message", result.message );
+                        location.reload();
+                    } else {
+                        $("#notification").text("Something went Wrong");
+                        $("#notification").show();
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                });
+
+        }
+
+    </script>
+
+}
+

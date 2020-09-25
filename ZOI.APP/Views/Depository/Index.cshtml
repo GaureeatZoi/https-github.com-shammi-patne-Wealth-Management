@@ -1,0 +1,264 @@
+﻿@model ZOI.BAL.ViewModels.DepositoryViewModel
+@using ZOI.BAL.Utilites
+@{
+    if (Model.Depository.Id == 0)
+    {
+        ViewData["Title"] = "Add Depository";
+    }
+    else
+    {
+        ViewData["Title"] = "Update Depository";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+
+}
+
+<form>
+    <div id="div_content" class="container-fluid" style="display: none ;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    @if (Model.Depository.Id != 0)
+                    {
+                        @Html.HiddenFor(e => e.Depository.Id)
+
+                    }
+                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.DPCode)<span class="mandatory">*</span>
+                                @if (Model.Depository.Id != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.Depository.DPCode, htmlAttributes: new { @class = "form-control", @id = "txt_dpcode", @readonly = true })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.Depository.DPCode, htmlAttributes: new { @class = "form-control", @id = "txt_dpcode", @onkeypress = "AlphaNumeric(event)" })
+                                }
+                                @Html.HiddenFor(e => e.Depository.Id, htmlAttributes: new { @id = "hdn_id" })
+
+                                @Html.ValidationMessageFor(e => e.Depository.DPCode, "", new { @class = "field-validation-error" })
+                                <span class="text-dpcode" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.DPName)<span class="mandatory">*</span>
+                                @Html.TextBoxFor(e => e.Depository.DPName, htmlAttributes: new { @class = "form-control", @id = "txt_dpname", @onkeypress = "AllowAlpha()" })
+                                @Html.ValidationMessageFor(e => e.Depository.DPName, "", new { @class = "field-validation-error" })
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.AddressLine1)<span class="mandatory">*</span>
+                                @Html.TextBoxFor(e => e.Depository.AddressLine1, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                                @Html.ValidationMessageFor(e => e.Depository.AddressLine1, "", new { @class = "field-validation-error" })
+
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.Depository.AddressLine2)
+                                @Html.TextBoxFor(e => e.Depository.AddressLine2, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                                @Html.ValidationMessageFor(e => e.Depository.AddressLine2, "", new { @class = "field-validation-error" })
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.Pincode)<span class="mandatory">*</span>
+                                @Html.TextBoxFor(e => e.Depository.Pincode, htmlAttributes: new { @class = "form-control", @onkeypress = "Numeric(event)" })
+                                @Html.ValidationMessageFor(e => e.Depository.Pincode, "", new { @class = "field-validation-error" })
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.CountryId)<span class="mandatory">*</span>
+                                @Html.DropDownListFor(e => e.Depository.CountryId, Model.CountryList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_country", @class = "form-control select2-container--material", @style = "width: 100%" })
+                               <br />
+                                @Html.ValidationMessageFor(e => e.Depository.CountryId, "", new { @style = "margin-top: -6px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.StateId)<span class="mandatory">*</span>
+                                @Html.DropDownListFor(e => e.Depository.StateId, Model.StateList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_state", @class = "form-control select2-container--material", @style = "width: 100%" })
+                               <br />
+                                @Html.ValidationMessageFor(e => e.Depository.StateId, "", new { @style = "margin-top: -6px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.CityId)<span class="mandatory">*</span>
+                                @Html.DropDownListFor(e => e.Depository.CityId, Model.CityList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_city", @class = "form-control select2-container--material", @style = "width: 100%" })
+                               <br />
+                                @Html.ValidationMessageFor(e => e.Depository.CityId, "", new { @style = "margin-top: -6px !important;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.Latitude)
+                                @Html.TextBoxFor(e => e.Depository.Latitude, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(e => e.Depository.Latitude, "", new { @class = "field-validation-error" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.Depository.Longitude)
+                                @Html.TextBoxFor(e => e.Depository.Longitude, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(e => e.Depository.Longitude, "", new { @class = "field-validation-error" })
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        <label style="font-size:14px !important">
+                                            @Html.DisplayNameFor(e => e.Depository.IsActive)
+                                            @Html.CheckBoxFor(e => e.Depository.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+                            @if (Model.Depository.Id != 0)
+                            {
+                                <button type="button"  onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button"  onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" onclick="Reset()">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+@section scripts{
+
+    <script>
+        var valid = true;
+        $(document).ready(function () {
+            var option = "<option value=''>--Select--</option>";
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_content").attr("style", "display:block");
+
+            $("#ddl_country").on("change", function () {
+                getAjax("@Url.Action("GetStateList")", { CountryID: $(this).val() }, function (result) {
+                    console.log(result);
+                    $.each(result, function (index, val) {
+                        console.log(val.value);
+                        console.log(val.text);
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_state").empty().append(option);
+                    $("#ddl_city").empty();
+                    option = null;
+                }, function () { })
+            })
+
+            $("#ddl_state").on("change", function () {
+                getAjax("@Url.Action("GetCityList")", { StateID: $(this).val() }, function (result) {
+                    console.log(result);
+
+
+                    $.each(result, function (index, val) {
+                        console.log(val.value);
+                        console.log(val.text);
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_city").empty().append(option);
+                    option = null;
+                }, function () { })
+            })
+
+            $("#txt_dpcode").on("change", function () {
+                getAjax("@Url.Action("IsExstis")", { name: $("#txt_dpcode").val(), ID: $("#hdn_id").val() }, function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $(".text-dpcode").empty().text("The DP Code already exsits.");
+                            $(".text-dpcode").show();
+                            valid = false;
+                            break;
+                        case "S":
+                            $(".text-dpcode").hide();
+                            valid = true;
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                    show_notification("Can't do because: " + error);
+                })
+            });
+        });
+
+        function SaveData() {
+            if ($("form").valid() && valid) {
+                $(".chart-loader").attr("style", "display:block");
+                $("#div_content").attr("style", "display:none");
+                var object = $("form").serializeArray();
+                var json = {};
+                $.each(object, function () {
+                    if (json[this.name] == undefined) {
+                        json[this.name] = this.value;
+                    }
+                });
+                getAjax("@Url.Action("AddUpdate")"
+                    , json
+                    , function (result) {
+                        switch (result.status) {
+                            case "F":
+                                show_notification(result.message);
+                                $(".chart-loader").attr("style", "display:none");
+                                $("#div_content").attr("style", "display:block");
+                                break;
+                            case "S":
+                                window.localStorage.setItem("Message", result.message);
+                                window.location.href = "@Url.Action("SummaryView")"
+                                break;
+                            default:
+                        }
+                    }, function (request, error) {
+                        show_notification("Can't do because: " + error);
+                        $(".chart-loader").attr("style", "display:none");
+                        $("#div_content").attr("style", "display:block");
+                    });
+            }
+            else
+                show_notification("Form data not valid.");
+        }
+    </script>
+    <Partial name="_ValidationScriptsPartial.cshtml" />
+}

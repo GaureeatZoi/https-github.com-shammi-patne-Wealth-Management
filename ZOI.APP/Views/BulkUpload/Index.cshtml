@@ -1,0 +1,197 @@
+﻿@model ZOI.BAL.ViewModels.BulkUploadViewModel
+@{
+    ViewData["Title"] = "Bulk Upload";
+}
+<style>
+    .form-group label {
+        font-size: 13px;
+        line-height: 1.42857;
+        color: #758396;
+        font-weight: 600;
+        margin-left: 0%;
+        width: auto !important;
+    }
+
+    .select2-container {
+        width: 100%;
+    }
+
+    .form-group input[type=file] {
+        opacity: 1 !important;
+        top: 15px !important;
+    }
+
+    .records-det {
+        padding-left: 400px;
+        padding-bottom: 75px;
+        padding-top: 120px;
+    }
+    a{
+        color:blue;
+    }
+</style>
+<div class="modal fade" id="notification_modal" tabindex="-1" role="dialog" style="display:none" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="notification_modal_body">
+                <div class="row">
+                    <div class="col-sm-1" style="margin-left:30px">
+                        <div class="leftside">
+                            @*<span style="margin:9px" class="zmdi zmdi zmdi-check-circle zmdi-hc-2x"></span>*@
+                        </div>
+                    </div>
+                    <div class="col-sm-9" style="margin-top: -8px;">
+                        <div class="rightside">
+                            <h2 id="notification"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button" data-dismiss="modal" id="btn_ok" class="btn btn-info btn-flat">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form>
+    <div id="form_upload" class="container-fluid" style="display: none; margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.LabelFor(e => e.bulkUpload.RTAsId) <span style="color:red">*</span>
+                                @Html.DropDownListFor(e => e.bulkUpload.RTAsId, Model.bulkUpload.RTAsList ?? new List<SelectListItem>(), "--Select--", new { @class = "form-control", @id = "ddl_rtaId", @style = "width:100%" })
+                                @Html.ValidationMessageFor(e => e.bulkUpload.RTAsId, "", new { @style = "margin-top: -6px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.LabelFor(e => e.bulkUpload.FileTypeId) <span style="color:red">*</span>
+                                @Html.DropDownListFor(e => e.bulkUpload.FileTypeId, Model.bulkUpload.FileTypeList ?? new List<SelectListItem>(), "--Select--", htmlAttributes: new { @class = "form-control", @id = "ddl_file_type_Id", @style = "width:100%" })
+                                @Html.ValidationMessageFor(e => e.bulkUpload.FileTypeId, "", new { @style = "margin-top: -6px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.LabelFor(e => e.bulkUpload.UploadFile) <span style="color:red">*</span>
+                                @Html.TextBoxFor(e => e.bulkUpload.UploadFile, new { @class = "form-control  file", @type = "file", @id = "file_upload", @name = "files", @value = "Browse", @title = "For Bulk Upload" })
+                                @Html.ValidationMessageFor(e => e.bulkUpload.UploadFile, "", new { @style = "margin-top: 67px !important; margin-left:-74px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-8 col-xs-12 ">
+                            <div class="text-center" style="margin:10px;">
+                                <button type="button" id="btn_upload" class="btn btn-success">
+                                    Upload
+                                </button>
+                            </div>
+                        </div>
+           
+                    </div>
+                    <div class="row records-det" style="display:none">
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 Booked-slider">
+                            <h4><i class="zmdi zmdi-file-text"></i>&nbsp;Records In Sheet</h4>
+                            <span id="sheet_records" style="padding-left:50px;"></span>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 Booked-slider">
+                            <h4> <i class=" zmdi zmdi-file"></i>&nbsp;Uploaded Records</h4>
+                            <span id="uploaded_records" style="padding-left:50px;"></span>
+                        </div>
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 Booked-slider">
+                            <a href="@Url.Action("ExportResponseFile")" id="download_response_file"> <i class="zmdi zmdi-download"></i>&nbsp;Response File</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#form_upload").show();
+            $(".records-det").show();
+            $("#sheet_records").text('0');
+            $("#uploaded_records").text('0');
+            $(".chart-loader").hide();
+
+            $("#file_upload").change(function () {
+                var files = $("#file_upload").get(0).files;
+                var data = new FormData();
+                data.append("file", files[0]);
+                if (files.length == '1') {
+                    $.ajax({
+                        type: "post",
+                        url: "@Url.Action("GetUploadedFileDetails")",
+                        data: data,
+                        dataType: "json",
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            console.log(response);
+                            if (response.status == "S") {
+                                $("#sheet_records").text(response.message);
+                                $("#uploaded_records").text(response.data);
+                            }
+                            else {
+                                $("#notification").empty().text(response.message);
+                                $("#notification_modal").modal("show").on(alignModal);
+                            }
+                        },
+                        error: function () {
+                            alert("error");
+                        },
+                    });
+                }
+                else {
+                    $("#sheet_records").text('0');
+                    $("#uploaded_records").text('0');
+                }
+            });
+
+            //file upload
+            $("#btn_upload").click(function () {
+                var files = $("#file_upload").get(0).files;
+                var rtaId = $("#ddl_rtaId").val();
+                var fileTypeId = $("#ddl_file_type_Id").val();
+                var data = new FormData();
+                data.append("file", files[0]);
+                data.append("rTAsId", rtaId);
+                data.append("fileTypeId", fileTypeId);
+                if ($("form").valid()) {
+                    $.ajax({
+                        type: "post",
+                        url: "@Url.Action("ImportExcelFile")",
+                        data: data,
+                        dataType: "json",
+                        contentType: false,
+                        processData: false,
+                        success: function (response) {
+                            console.log(response);
+                            if (response != null) {
+                                $("#notification").empty().text(response.message);
+                                $("#notification_modal").modal("show").on(alignModal);
+                            }
+                        },
+                        error: function () {
+                            $("#notification").empty().text("Something  went wrong...");
+                            $("#notification_modal").modal("show").on(alignModal);
+                        },
+                    });
+                }
+            });
+
+            function alignModal() {
+                var modalDialog = $(this).find(".modal-dialog");
+                modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+            }
+        });
+    </script>
+}

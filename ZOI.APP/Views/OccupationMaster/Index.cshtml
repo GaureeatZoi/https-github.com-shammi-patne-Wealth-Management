@@ -1,0 +1,142 @@
+﻿@model ZOI.BAL.ViewModels.OccupationViewModel
+@using ZOI.BAL.Utilites
+@{
+    if (Model.OccupationMaster.ID != 0)
+    {
+        ViewData["Title"] = "Update Occupation Master";
+    }
+    else
+    {
+        ViewData["Title"] = "Add Occupation Master";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["Url"] = Url.Action("SummaryView");
+}
+
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 20px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.OccupationMaster.Occupation)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.OccupationMaster.Occupation, htmlAttributes: new { @class = "form-control", @id = "txt_occupation", @onclick = "AllowAlpha()" })
+                                @Html.ValidationMessageFor(e => e.OccupationMaster.Occupation)
+                                @Html.HiddenFor(e => e.OccupationMaster.ID, htmlAttributes: new { @class = "form-control", @id = "hdn_id" })
+                                <span class="txt_occupation field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.DisplayNameFor(e => e.OccupationMaster.IsActive)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.CheckBoxFor(e => e.OccupationMaster.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+
+                            @if (Model.OccupationMaster.ID != 0)
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" id="" onclick="Reset()">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+
+    <script>
+        var valid = true;
+        $(document).ready(function () {
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_form").show();
+        });
+
+        // Check the duplicate name value on change.
+        $("#txt_occupation").on("change", function () {
+            getAjax("@Url.Action("IsExstis")", { name: $("#txt_occupation").val(), ID: $("#hdn_id").val() }, function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $(".txt_occupation").empty().text("This Occupation was already exsits.");
+                            $(".txt_occupation").show();
+                            valid = false;
+                            break;
+                        case "S":
+                            $(".txt_occupation").hide();
+                            valid = true;
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+        // Save data functionality.
+        function SaveData() {
+             // If the form was valid and the Fields was Unique it move to the  add  functionality
+            if ($("form").valid() && valid) {
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+                    var object = $("form").serializeArray();
+                    var json = {};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    postAjax("@Url.Action("AddUpdate")", json,
+                        function (result)
+                        {
+                            switch (result.status) {
+                                case "F":
+                                    show_notification(result.message);
+                                    $(".chart-loader").hide();
+                                    $("#div_form").show();
+                                    break;
+                                case "S":
+                                    window.localStorage.setItem("Message", result.message);
+                                    window.location.href = "@Url.Action("SummaryView")"
+                                    break;
+                                default:
+                            }
+                        }, function (request, error)
+                            {
+                                show_notification("Something went wrong");
+                            })
+                }
+                //Else show th error.
+                else {
+                    show_notification("Form was not valid");
+                }
+        }
+
+    </script>
+}
+
+

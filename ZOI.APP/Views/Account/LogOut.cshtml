@@ -1,0 +1,251 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_Layout_Logout";
+}
+<link href="~/Assets/css/Loader.css" rel="stylesheet" />
+<style>
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #fff;
+    }
+
+    thead {
+        background: #fff;
+    }
+
+    table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTable thead .sorting_desc {
+        background: none;
+    }
+
+    table.dataTable thead th, table.dataTable tfoot th {
+        font-weight: 100;
+        color: gray;
+    }
+
+    table.dataTable thead th, table.dataTable thead td {
+        padding: 10px 18px;
+        border-bottom: 1px solid #fff;
+    }
+
+    table {
+        border-bottom: 1px solid #fff;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+    }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+    .wrapper {
+        width: 100%;
+    }
+
+    .dataTables_filter {
+        display: none;
+    }
+
+    .dataTables_length {
+        display: none;
+    }
+
+    sub {
+        font-size: 50%;
+    }
+
+    b {
+        margin-left: 23px;
+        font-size: 35px;
+        color: cornflowerblue;
+        margin-top: 20px;
+    }
+
+    .slider-details {
+        margin-top: 10px;
+        margin-bottom: 20px;
+    }
+
+    .dataTables_info {
+        display: none;
+    }
+
+    .pagination {
+        display: none;
+    }
+
+    .dataTables_paginate {
+        display: none;
+    }
+
+    .grid-section {
+        margin-top: 0px;
+    }
+
+    .toggle-placement {
+        margin-right: 35px;
+    }
+
+    .refresh-alignment {
+        margin-left: 565px;
+    }
+
+        .refresh-alignment :hover {
+            cursor: pointer;
+        }
+
+    .slider-filter {
+    }
+
+    @@media only screen and (max-width: 1440px) {
+        .chart-div {
+            height: 300px;
+            width: 1231px;
+        }
+
+        .charts {
+            width: 400px;
+            height: 350px;
+        }
+    }
+
+    @@media only screen and (max-width: 1024px) {
+        .chart-div {
+            height: auto;
+            width: auto;
+        }
+
+        .charts {
+            width: 350px;
+            height: 350px;
+        }
+    }
+
+    @@media only screen and (max-width: 768px) {
+        .chart-div {
+            height: 1559px;
+            width: 658px;
+        }
+
+        .charts {
+            width: 500px;
+            height: 500px;
+        }
+    }
+
+    @@media only screen and (max-width: 425px) {
+        .chart-div {
+            height: 949px;
+            width: 335px;
+        }
+
+        .charts {
+            width: 300px;
+            height: 300px;
+        }
+    }
+
+    @@media only screen and (max-width: 375px) {
+        .chart-div {
+            height: 684px;
+            width: 285px;
+        }
+
+        .charts {
+            width: 250px;
+            height: 250px;
+        }
+    }
+
+    @@media only screen and (max-width: 375px) {
+        .chart-div {
+            height: 654px;
+            width: 230px;
+        }
+
+        .charts {
+            width: 200px;
+            height: 200px;
+        }
+    }
+
+    .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+        border-radius: 8px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+        border: 1px solid blue;
+        background: blue;
+        font-weight: normal;
+        color: #454545;
+    }
+
+    .numbers-alignment {
+        float: right !important;
+    }
+</style>
+
+
+<div id="content" class="container-fluid">
+    <div class="content-body">
+        
+    </div>
+</div>
+
+@section scripts{
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+}

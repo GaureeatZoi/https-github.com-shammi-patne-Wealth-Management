@@ -1,0 +1,436 @@
+﻿@model ZOI.BAL.ViewModels.EquityBrokersViewModel
+@using ZOI.BAL.Utilites
+
+@{
+    if (Model.equityBrokers.ID != 0)
+    {
+        ViewData["Title"] = "Update Equity Broker";
+    }
+
+    ViewData["Title"] = "Add Equity Broker";
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                            <div class="form-group text-center is-empty">
+                                @if (Model.equityBrokers.Logo == null)
+                                {
+                                    <img src="~/Material Design/images/user_avatar.png" class="img-show" alt="" id="company_logo" style="height:150px;width:150px;margin-top:0px" />
+                                }
+                                else
+                                {
+                                    <img src="~/Uploaded_Image/@Model.equityBrokers.Logo" class="img-show " alt="" id="company_logo" style="height:150px;width:150px;margin-top:0px" />
+                                }
+
+                                @Html.HiddenFor(e => e.equityBrokers.Logo, new { @id = "hdn_logo" })
+                                <input type="file" id="file_logo" asp-for="@Model.equityBrokers.LogoFile" class="fileUpload" style="display:none" />
+                                <br />
+                                @Html.ValidationMessageFor(e => e.equityBrokers.Logo)
+                                <span id="val_file_logo" class="text-center" style="color:red" hidden="hidden"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.Name)<span style="color: red"><strong>&nbsp;*</strong></span>
+
+                                @if (Model.equityBrokers.ID != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.equityBrokers.Name, htmlAttributes: new { @class = "form-control", @id = "txt_name", @readonly = true })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.equityBrokers.Name, htmlAttributes: new { @class = "form-control", @id = "txt_name", @onclick = "AllowAlpha()" })
+                                }
+                                @Html.ValidationMessageFor(e => e.equityBrokers.Name)
+                                @Html.HiddenFor(e => e.equityBrokers.ID, htmlAttributes: new { @id = "hdn_id", @class = "form-control" })
+                                <span class="txt_name field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.equityBrokers.NSEMembercode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.equityBrokers.ID != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.equityBrokers.NSEMembercode, htmlAttributes: new { @id = "txt_nsemember", @class = "form-control", @placeholder = "", @readonly = true })
+
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.equityBrokers.NSEMembercode, htmlAttributes: new { @id = "txt_nsemember", @class = "form-control", @placeholder = "" })
+
+                                }
+
+                                @Html.ValidationMessageFor(e => e.equityBrokers.NSEMembercode)
+                                <span class="txt_nsemember field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.BSEMembercode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.equityBrokers.ID != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.equityBrokers.BSEMembercode, htmlAttributes: new { @class = "form-control", @id = "txt_bsemember", @readonly = true })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.equityBrokers.BSEMembercode, htmlAttributes: new { @class = "form-control", @id = "txt_bsemember", @onclick = "AllowAlpha()" })
+                                }
+
+                                @Html.ValidationMessageFor(e => e.equityBrokers.BSEMembercode)
+                                <span class="txt_bsemember field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.equityBrokers.MCXMembercode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.equityBrokers.ID != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.equityBrokers.MCXMembercode, htmlAttributes: new { @class = "form-control", @id = "txt_mcxmember", @readonly = true })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.equityBrokers.MCXMembercode, htmlAttributes: new { @class = "form-control", @id = "txt_mcxmember", @onclick = "AllowAlpha()" })
+                                }
+                                @Html.ValidationMessageFor(e => e.equityBrokers.MCXMembercode)
+                                <span class="txt_mcxmember field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.AddressLine1)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextAreaFor(e => e.equityBrokers.AddressLine1, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(e => e.equityBrokers.AddressLine1)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.AddressLine2)
+                                @Html.TextAreaFor(e => e.equityBrokers.AddressLine2, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(e => e.equityBrokers.AddressLine2)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.CountryID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.equityBrokers.CountryID, Model.CountryList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_country", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.equityBrokers.CountryID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.StateID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.equityBrokers.StateID, Model.StateList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_state", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.equityBrokers.StateID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.CityID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.equityBrokers.CityID, Model.CityList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_city", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.equityBrokers.CityID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.PinCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.equityBrokers.PinCode, htmlAttributes: new { @class = "form-control", @placeholder = "eg. 123456" })
+                                @Html.ValidationMessageFor(e => e.equityBrokers.PinCode)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.equityBrokers.CompanyID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.equityBrokers.CompanyID, Model.CompanyList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_company", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.equityBrokers.CompanyID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+
+                                        @Html.DisplayNameFor(e => e.equityBrokers.IsActive)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.CheckBoxFor(e => e.equityBrokers.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+                            @if (Model.equityBrokers.ID != 0)
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" id="" onclick="Reset()">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+
+    <script>
+        var name = true;
+        var bsecode = true;
+        var nsecode = true;
+        var mcxcode = true;
+        var option = "<option value=''>--Select--</option>";
+        $(document).ready(function () {
+           
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_form").show();
+        });
+
+        // Fill state dropdown
+            $("#ddl_country").on("change", function () {
+                getAjax("@Url.Action("GetStateList")", { CountryID: $(this).val() }, function (result) {
+                    $("#ddl_city").empty().append(option);
+                    $.each(result, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_state").empty().append(option);
+                    option = "<option value=''>--Select--</option>";
+
+                }, function () {})
+            })
+
+        // Fill City dropdown
+            $("#ddl_state").on("change", function () {
+                getAjax("@Url.Action("GetCityList")", { StateID: $(this).val() }, function (response) {
+                    $.each(response, function (index, data) {
+                        option += "<option value='" + data.value + "'>" + data.text +" </option>"
+                            });
+                    $("#ddl_city").empty().append(option);
+                    option = "<option value=''>--Select--</option>";
+                }, function () {})
+            })
+
+
+        // Check the duplicate name value on chang.
+            $("#txt_name").on("change", function () {
+                getAjax("@Url.Action("IsExstis")", { name: $("#txt_name").val(), ID: $("#hdn_id").val() }, function (result) {
+                    switch (result.status) {
+                        case "S":
+                            $(".txt_name").hide();
+                            valid = true;
+                            break;
+                        case "F":
+                            $(".txt_name").empty().text("The Name was already exsits.");
+                            $(".txt_name").show();
+                            valid = false;
+                            break;
+
+                        default:
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+        // Check the duplicate NSE member code value on change.
+        $("#txt_nsemember").on("change", function () {
+            getAjax("@Url.Action("IsNSEExstis")", { name: $("#txt_nsemember").val()}, function (result) {
+                    switch (result.status) {
+                        case "S":
+                            $(".txt_nsemember").hide();
+                            name = true;
+                            break;
+                        case "F":
+                            $(".txt_nsemember").empty().text("The Branch Name was already exsits for this Bank.");
+                            $(".txt_nsemember").show();
+                            name = false;
+                            break;
+
+                        default:
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+        // Check the duplicate BSE member code value on change.
+        $("#txt_bsemember").on("change", function () {
+            getAjax("@Url.Action("IsBSERExstis")", { name: $("#txt_bsemember").val()}, function (result) {
+                    switch (result.status) {
+                        case "S":
+                            $(".txt_bsemember").hide();
+                            micr = true;
+                            break;
+                        case "F":
+                            $(".txt_bsemember").empty().text("The IFSC was already exsits for Some Bank.");
+                            $(".txt_bsemember").show();
+                            micr = false;
+                            break;
+
+                        default:
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+        // Check the duplicate MCX member code value on change.
+        $("#txt_mcxmember").on("change", function () {
+            getAjax("@Url.Action("IsMCXExstis")", { name: $("#txt_mcxmember").val()}, function (result) {
+                    switch (result.status) {
+                        case "S":
+                            $(".txt_mcxmember").hide();
+                            ifsc = true;
+                            break;
+                        case "F":
+                            $(".txt_mcxmember").empty().text("The IFSC was already exsits for Some Bank.");
+                            $(".txt_mcxmember").show();
+                            ifsc = fasle;
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+        // Save data function.
+        function SaveData() {
+            // If the form was valid and the Fields was Unique it move to the  add  functionality 
+            if ($("form").valid() && bsecode&& nsecode && mcxcode) {
+                $("#div_form").css("filter", "opacity(30%)")
+                $(".chart-loader").show();
+                var file = $("#file_logo").get(0).files;
+                var data = new FormData;
+                data.append("LogoFile", file[0]);
+                data.append("Logo", $("#hdn_logo").val());
+                data.append("ID", $("#hdn_id").val());
+                $.ajax({
+                    type: "post",
+                    url: "@Url.Action("UploadLogo")",
+                    data: data,
+                    dataType: "JSON",
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                        if (result.status == "S") {
+                            $("#hdn_logo").val(result.data);
+                            debugger;
+                            var object = $("form").serializeArray();
+                            var json = {};
+                            $.each(object, function () {
+                                if (json[this.name] == undefined) {
+                                    json[this.name] = this.value;
+                                }
+                            });
+                            console.log(json);
+                            postAjax("@Url.Action("AddUpdate")", json,
+                                function (result) {
+                                    switch (result.status) {
+                                        case "S":
+                                            window.localStorage.setItem("Message", result.message);
+                                            window.location.href = "@Url.Action("SummaryView")"
+                                        case "F":
+                                            $("#notification").text(result.message);
+                                            $("#notification").removeClass().addClass("alert alert-success").show();
+                                            setTimeout(function () {
+                                                $('#notification').slideUp("slow");
+                                            }, 3000);
+                                    }
+                                },
+                                function (request, error) {
+                                    //alert(" Can't do because: " + error);
+                                });
+                        }
+                        else {
+                            show_notification(result.message);
+                        }
+                    },
+                    error: function (error) {
+                        show_notification("Something went wrong");
+                    }
+                });
+            }
+        }
+
+        //Trigger the file upload.
+        $("#company_logo").click(function () {
+            $(".fileUpload").click();
+        });
+
+        // Upload the file and show
+        $('.fileUpload').change(function () {
+            var $this = $(this);
+            var file = this.files[0];
+            var fileType = file["type"];
+            var validImageTypes = ["image/png"];
+            var check = $.inArray(fileType, validImageTypes);
+            if ($.inArray(fileType, validImageTypes) == 0) {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var image = new Image();
+                        image.src = e.target.result;
+                        image.onload = function () {
+                            var height = this.height;
+                            var width = this.width;
+                            if (height == 512 || width == 512) {
+                                $("#company_logo").show().attr('src', e.target.result);
+                                $("#val_file_logo").text("").hide();
+                                return true;
+                            } else {
+                                $("#val_file_logo").text("Height and Width must be in 512px.").show();
+                                $('.fileUpload').val("");
+                                return false;
+                            }
+                        };
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    $("#val_file_logo").text("Please select the PNG valid image.").show();
+                    $('.fileUpload').val("");
+                }
+            }
+            else {
+                $("#val_file_logo").text("Please select the PNG valid imag.").show();
+                $('.fileUpload').val("");
+            }
+        });
+
+    </script>
+}
+

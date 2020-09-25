@@ -1,0 +1,246 @@
+﻿@{
+
+    ViewData["Title"] = "RTAs Summary";
+    ViewData["ActionTitle"] = "Add Event";
+    ViewData["ActionIcon"] = "zmdi-plus";
+    ViewData["ActionId"] = "btn_add";
+
+}
+
+<style>
+    .dropdown-item {
+        cursor: pointer;
+    }   
+</style>
+
+
+<div class="modal fade in" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="modal-box">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="card m-0">
+                <header class="card-heading p-b-20">
+                    <h4 class="modal-title" id="modal-header-name">Change Status</h4>
+                    <ul class="card-actions icons right-top">
+                        <li>
+                            <a href="javascript:void(0)" data-dismiss="modal" aria-label="Close">
+                                <i class="zmdi zmdi-close"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </header>
+            </div>
+            <div class="modal-body">
+                <p id="modal-body-content">
+                    <h3> Are you sure you need to change status ?.</h3>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button" class="btn btn-default " data-dismiss="modal" id="modal-button-two"><span>No</span></button>
+                        <button type="button" class="btn btn-danger" id="btn_deactivate"><span>Yes</span></button>
+                    </div>
+                </div>
+            </div>           
+        </div>
+        <!-- modal-content -->
+    </div>
+    <!-- modal-dialog -->
+</div>
+
+
+
+<div class="modal fade" id="notification_modal" tabindex="-1" role="dialog" style="display:none" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="notification_modal_body">
+                <div class="row">
+                    <div class="col-sm-1" style="margin-left:30px">
+                        <div class="leftside">
+                            <span style="margin:9px" class="zmdi zmdi zmdi-check-circle zmdi-hc-2x"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-9" style="margin-top: -8px;">
+                        <div class="rightside">
+                            <h2 id="notification"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @* <button type="button" class="btn btn-info" data-dismiss="modal">No</button>*@
+                        <button type="button" data-dismiss="modal" class="btn btn-info btn-flat">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*--Loader--*@
+<div class="text-center chart-loader">
+    <div class="loader1">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</div>
+
+<div id="content" class="container-fluid" style="display: none">
+    <div class="content-body">
+        <div class="card p-t-40">
+            <div class="card-body">
+                <div class="row">
+                    <div class="card-body">
+                        <table id="tbl_masters" class="table table-striped  dt-responsive" cellspacing="0" style="width: 100%;">
+
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>Status</th>
+                                    <th>Last Updated</th>
+
+                                </tr>
+                            </thead>
+                            <tbody> </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts{   
+
+    <script>
+        $(document).ready(function () {          
+
+            var Message = window.localStorage.getItem("Message");
+            localStorage.removeItem("Message");
+            if (Message != null) {
+                $("#notification").empty().text(Message);
+                $("#notification_modal").modal("show").on(alignModal);
+                setTimeout(function () {
+                    $('#notification_modal').slideUp("slow").modal("hide");
+                }, 3000);
+                Message = null;
+            } else {
+                $("#notification_modal").hide();
+            }
+            DataTable();
+
+        });
+
+        $("#btn_add").click(function () {
+            window.location.href = "@Url.Action("AddGerenalForm")";
+        })
+
+        function alignModal() {
+            var modalDialog = $(this).find(".modal-dialog");
+            // Applying the top margin on modal dialog to align it vertically center
+            modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+        }
+
+        function DataTable() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Summary")",
+                data: {},
+                success: function (result) {
+                    console.log(result);
+                    if (result.status="S") {
+                        $("#tbl_masters").dataTable({
+                            processing: true,
+                            data: result.data,
+                            order: [],
+                            columns: [
+                                 {
+                                    "data": "name",
+                                    "render": function (data, type, row) {
+                                        var status_text = "",
+                                            status = true;
+                                        switch (row.isActiveText) {
+                                            case "Active":
+                                                status_text = "<i class='zmdi zmdi-eye-off' ></i> Deactivate";
+                                                status = false;
+                                                break;
+                                            case "InActive":
+                                                status_text = "<i class='zmdi zmdi-eye' ></i> Activate";
+                                                status = true;
+                                                break;
+                                            default:
+                                        }
+                                        return `<div class="dropdown">
+                                                       <button type="button" class="btn btn-fab btn-fab-sm btn-success btn-flat dropdown-toggle" data-toggle="dropdown" data-placement="right" title="Action">
+                                                            <i class="fa fa-ellipsis-v"></i>
+                                                       </button>
+                                                        <ul class="dropdown-menu btn-primary dropdown-menu-left">
+                                                            <li><a class="dropdown-item" href="@Url.Action("UpdateGerenalForm")?ID=` + row.id + `">
+                                                                <i class="fa fa-pencil-square-o"></i>  Edit </a>                                                            
+                                                            </li>
+                                                            <li><a class="dropdown-item" onclick="OpenModel(` + row.id +`,`+status +`)" style="cursor:pointer;">`+ status_text+`</a>
+                                                            </li>
+                                                        </ul>
+                                                </div>`;
+                                    }
+                                 },
+                                 { 'data': "name" },
+                                 { 'data': "address" },
+                                 { 'data': "isActiveText" },
+                                 {
+                                     "data": "lastUpdatedDate",
+                                    //"render": function (data, type, row) {
+                                    //    return (row.modifiedOn != null) ? "<span>" + format_date(row.modifiedOn) + "</span>" : "<span>" +format_date(row.createdOn)+"</span>";
+                                    //}
+                                 },
+                            ]
+                        })
+                    }
+                    $(".chart-loader").attr("style", "display:none");
+                    $("#content").attr("style", "display:block");
+                },
+                error: function (request, error) {
+                    console.log(request);
+                    alert(" Can't do because: " + error);
+                }
+            });
+        }
+
+        function OpenModel(id,status) {
+            $("#btn_deactivate").attr("onclick", "Deactive(" + id +","+status+")");
+            $('#exampleModalLong').modal("show");
+
+        }
+
+        function Deactive(id, status) {
+            getAjax("@Url.Action("ChangeStatus")", {ID:id,Status:status},
+                function (result) {
+                    if (result.status = "S") {
+                        window.localStorage.setItem("Message", "Status changed successfully" );
+                        location.reload();
+                    } else {
+                        $("#notification").text("Something went Wrong");
+                        $("#notification").show();
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                });
+
+        }        
+
+        function Edit(id) {
+             window.location.href = "@Url.Action("UpdateGerenalForm")?ID="+id;
+        }
+    </script>
+}

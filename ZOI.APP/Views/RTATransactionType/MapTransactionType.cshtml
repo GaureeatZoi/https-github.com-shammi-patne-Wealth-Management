@@ -1,0 +1,182 @@
+﻿@model ZOI.BAL.ViewModels.RTATransactionTypeViewModel
+@using ZOI.BAL.Utilites
+@{
+    ViewData["Title"] = "RTA Transaction Types Mapping";
+    @if (Model.CurrentMenuPermission.Write)
+    {
+        ViewData["ActionTitle"] = "Add Event";
+        ViewData["ActionIcon"] = "zmdi-plus";
+        ViewData["ActionId"] = "btn_add";
+        ViewData["URL"] = Url.Action("Index");
+
+
+
+    }
+}
+
+
+<div id="content" class="container-fluid" >
+    <div class="content-body">
+        <div class="card">
+            <form> 
+                <div class="card-body">
+
+                    <div class="row"  id="div_content">
+                        <div class="row">
+                            <div class="card-body">
+                                <table id="tbl_masters" class="table table-striped  dt-responsive" cellspacing="0" style=" width: 100%;">
+
+                                    <thead>
+                                        <tr>
+                                            <th colspan="1">
+                                                Sr. No.
+                                            </th>
+                                            <th colspan="1">
+                                                RTA Name
+                                            </th>
+                                            <th colspan="1">
+                                                RTA Transaction Type
+                                            </th>
+                                            <th colspan="1">
+                                                Remarks
+                                            </th>
+                                            <th colspan="2">
+                                                Transaction Type
+                                            </th>
+
+</thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="text-center" style="margin:10px;">
+                                <button id="btn_save" class="btn btn-success">
+                                    Save
+                                </button>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                  
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+
+        $(document).ready(function () {
+            DataTable();
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_content").show();
+        });
+
+
+        function DataTable() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("UnmappedSummary")",
+                data: {},
+                success: function (result) {
+                    if (result.status == "S") {
+
+                        console.log(result.data);
+                        $("#tbl_masters tbody").append(result.data);
+
+                        $(".chart-loader").attr("style", "display:none");
+                        $("#div_content").show();
+                    }
+                },
+                error: function (request, error) {
+                    show_notification("Something went wrong");
+                }
+            });
+     }
+
+
+        $("#btn_save").click(function () {
+            var rows = $('tbody').find('tr');
+            var data = { model: [] }
+            $.each(rows, function () {
+                var json = {};
+                json["RDATTID"] = $(this).find("td:eq(0) .hdn-id").val();
+
+                json["TransactionTypeID"] = $(this).find("td:eq(4) .rtatran").val();
+                data.model.push(json);
+
+            });
+            console.log(data);
+            if (data.model.length > 0) {
+                console.log(data);
+                postAjax("/RTATransactionType/MapData", data, function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $("#notification").empty().text(result.message);
+                            $("#notification_modal").modal("show").on(alignModal);
+                            setTimeout(function () {
+                                $('#notification_modal').slideUp("slow").modal("hide");
+                            }, 3000);
+                            Message = null;
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                            break;
+                        case "S":
+                            window.localStorage.setItem("Message", result.message);
+                            window.location.href = "@Url.Action("SummaryView")"
+                            break;
+                        default:
+                    }
+                })
+            }
+            else {
+                show_notification("No Mappings to make changes.");
+            }
+            });
+
+
+
+
+        @*$("#btn_save").click(function () {
+            var rows = $('tbody').find('tr');
+            var data = { model: [] }
+            $.each(rows, function () {
+                var json = {};
+                json["RDATTID"] = $(this).find("td:eq(0) .hdn-id").val();
+
+                json["TransactionTypeID"] = $(this).find("td:eq(4) .rtatran").val();
+                data.model.push(json);
+
+            });
+            console.log(data);
+            if (data.model.length>0) {
+                console.log(data);
+                postAjax("/RTATransactionType/MapData", data, function (result) {
+                    if (result.status=="S") {
+                        window.localStorage.setItem("Message", result.message);
+                        window.location.href = "@Url.Action("SummaryView")";
+                    }
+                    else {
+                        show_notification(result.message);
+                    }
+                }, function () {
+                    show_notification("Something went wrong");
+                });
+            }
+            else {
+                show_notification("No Mappings to make changes.");
+            }
+        });*@
+
+        function alignModal() {
+            var modalDialog = $(this).find(".modal-dialog");
+            modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+        }
+    </script>
+}

@@ -1,0 +1,202 @@
+﻿@model ZOI.BAL.ViewModels.RoleViewModel
+@{
+
+    ViewData["Title"] = "Role Master";
+    @if (Model.CurrentMenuPermission.Write)
+    {
+        ViewData["ActionTitle"] = "Add Event";
+        ViewData["ActionIcon"] = "zmdi-plus";
+        ViewData["ActionId"] = "btn_add";
+        ViewData["URL"] = Url.Action("Index");
+    }
+
+}
+
+<div id="content">
+    <div class="content-body">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    @if (Model.CurrentMenuPermission.ExportCSV || Model.CurrentMenuPermission.ExportExcel || Model.CurrentMenuPermission.ExportPDF)
+                    {
+                        <text>
+                            <div class="dropdown col-3 pull-right">
+                                <button type="button" class="btn btn-fab btn-fab-sm btn-success btn-flat dropdown-toggle" data-toggle="dropdown" data-placement="right" title="Action">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </button>
+                                <ul class="dropdown-menu btn-primary dropdown-menu-left">
+                                    @if (Model.CurrentMenuPermission.ExportCSV)
+                                    {
+                                        <text>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=2">
+                                                <i class="fa fa-download"></i>  Export CSV
+                                            </a>
+                                        </li>
+                        </text>
+                    }
+                                    @if (Model.CurrentMenuPermission.ExportExcel)
+                                    {
+                                        <text>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=1">
+                                                    <i class="fa fa-download"></i>  Export Excel
+                                                </a>
+                                            </li>
+                                        </text>
+                                    }
+                                    @if (Model.CurrentMenuPermission.ExportPDF)
+                                    {
+                                        <text>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=1">
+                                                    <i class="fa fa-download"></i>  Export PDF
+                                                </a>
+                                            </li>
+                                        </text>
+                                    }
+                                </ul>
+                            </div>
+                            </text>
+                        }
+                </div>
+                <div class="row">
+                    <div class="card-body">
+                        <table id="DT_load" class="table  table-bordered" style="width:100%">
+                          
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+
+    <script>
+        var dataTable;
+
+        $(document).ready(function () {
+            var Message = window.localStorage.getItem("Message");
+            localStorage.removeItem("Message");
+            if (Message != null) {
+                $("#notification").empty().text(Message);
+                $("#notification_modal").modal("show").on(alignModal);
+                setTimeout(function () {
+                    $('#notification_modal').slideUp("slow").modal("hide");
+                }, 3000);
+                Message = null;
+            } else {
+                $("#notification_modal").hide();
+            }
+            DataTable()
+        });
+       
+         function DataTable() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetAll")",
+                data: {},
+                success: function (result) {
+                    console.log(result);
+                    if (result.status="S") {
+                        $("#DT_load").dataTable({
+                            processing: true,
+                            data: result.data,
+                            order: [],
+                            columns: [
+                                  @if (Model.CurrentMenuPermission.Write)
+                                 {
+                                    <text>
+                                    {
+                                       "data": "name",
+                                       "render": function (data, type, row) {
+                                           var status_text = "",
+                                               status = true;
+                                           switch (row.isActiveText) {
+                                               case "Active":
+                                                   status_text = "<i class='zmdi zmdi-eye-off' ></i> Deactivate";
+                                                   status = false;
+                                                   break;
+                                               case "InActive":
+                                                   status_text = "<i class='zmdi zmdi-eye' ></i> Activate";
+                                                   status = true;
+                                                   break;
+                                               default:
+                                           }
+                                           return `<div class="dropdown">
+                                                          <button type="button" class="btn btn-fab btn-fab-sm btn-success btn-flat dropdown-toggle" data-toggle="dropdown" data-placement="right" title="Action">
+                                                               <i class="fa fa-ellipsis-v"></i>
+                                                          </button>
+                                                           <ul class="dropdown-menu btn-primary dropdown-menu-left">
+                                                               <li><a class="dropdown-item" href="@Url.Action("Update")?ID=` + row.roleID + `">
+                                                                   <i class="fa fa-pencil-square-o"></i>  Edit </a>
+                                                               </li>
+                                                               <li><a class="dropdown-item" onclick="OpenModel(` + row.id +`,`+status +`)" style="cursor:pointer;">`+ status_text+`</a>
+                                                               </li>
+                                                           </ul>
+                                                   </div>`;
+                                       }
+                                    },
+                                    </text>
+                                 }
+                                { "data": "name", "width": "20%", 'title':'Role Name'},
+                                { "data": "normalizedName", "width": "20%", 'title': 'Role Description' },
+                                { "data": "parentRoleName", "width": "20%", 'title': 'Parent Role Name' },
+                                { "data": "applicationName", "width": "20%",'title': "ApplicationName" },
+                                { 'data': "isActiveText", 'title': 'Status' },
+                                { 'data': "lastUpdatedDate", 'title': 'Last Updated' },
+
+                            ]
+                        })
+                    }
+                    $(".chart-loader").attr("style", "display:none");
+                    $("#content").attr("style", "display:block");
+                },
+                error: function (request, error) {
+                    console.log(request);
+                    alert(" Can't do because: " + error);
+                }
+            });
+        }
+
+
+
+
+
+
+
+
+
+          function OpenModel(id,status) {
+            $("#btn_deactivate").attr("onclick", "Deactive(" + id +","+status+")");
+            $('#exampleModalLong').modal("show");
+
+        }
+
+        function Deactive(id, status) {
+         
+            getAjax("@Url.Action("ChangeStatus")", {ID:id,Status:status},
+                function (result) {
+                    if (result.status = "S") {
+                        window.localStorage.setItem("Message", "Status changed successfully" );
+                        location.reload();
+                    } else {
+                        $("#notification").text("Something went Wrong");
+                        $("#notification").show();
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                });
+
+        }
+
+        function alignModal() {
+            var modalDialog = $(this).find(".modal-dialog");
+            modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+        }
+
+
+       // }
+    </script>
+}

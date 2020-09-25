@@ -1,0 +1,247 @@
+﻿@model ZOI.BAL.ViewModels.EnumViewModel
+@using ZOI.BAL.Utilites
+
+@{
+    if (Model.EnumMaster.ID != 0)
+    {
+        ViewData["Title"] = "Update Enum Master";
+    }
+
+    ViewData["Title"] = "Add Enum Master";
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    @{
+                        if (Model.EnumMaster.ID == 0)
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                         @Html.HiddenFor(e => e.EnumMaster.ID)
+                                         @Html.DisplayNameFor(e => e.EnumMaster.EnumType)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                         @Html.TextBoxFor(e => e.EnumMaster.EnumType, htmlAttributes: new { @class = "form-control", @onkeypress = "AllowAlpha(event)", @Id = "Enumtype_txt" })
+                                         @Html.ValidationMessageFor(e => e.EnumMaster.EnumType, "", new { @class = "field-validation-error" })
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+
+                                        @Html.DisplayNameFor(e => e.EnumMaster.EnumCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.EnumMaster.EnumCode, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumeric(event)", @Id = "EnumCode_txt" })
+                                        @Html.ValidationMessageFor(e => e.EnumMaster.EnumCode, "", new { @class = "field-validation-error" })
+                                        <span class="txt_name field-duplicate-validation" style="color:red"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.EnumMaster.EnumValue)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.EnumMaster.EnumValue, htmlAttributes: new { @class = "form-control", @Id = "EnumValue_txt" })
+                                        @Html.ValidationMessageFor(e => e.EnumMaster.EnumValue, "", new { @class = "field-validation-error" })
+                                        <span class="txt_EnumValue field-duplicate-validation" style="color:red"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        } else
+                        {
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.HiddenFor(e => e.EnumMaster.ID)
+                                        @Html.DisplayNameFor(e => e.EnumMaster.EnumType)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.EnumMaster.EnumType, htmlAttributes: new { @class = "form-control", @readonly = "true", @Id = "Enumtype_txt" })
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+
+                                        @Html.DisplayNameFor(e => e.EnumMaster.EnumCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.EnumMaster.EnumCode, htmlAttributes: new { @class = "form-control", @readonly = "true", @Id = "EnumCode_txt" })
+
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.EnumMaster.EnumValue)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.EnumMaster.EnumValue, htmlAttributes: new { @class = "form-control", @Id = "EnumValue_txt", @readonly = "true" })
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            }
+                        }
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.EnumMaster.EnumDescription)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.EnumMaster.EnumDescription, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                                        @Html.ValidationMessageFor(e => e.EnumMaster.EnumDescription, "", new { @class = "field-validation-error" })
+
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.EnumMaster.Icons)
+                                        @Html.TextBoxFor(e => e.EnumMaster.Icons, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                                        @Html.ValidationMessageFor(e => e.EnumMaster.Icons, "", new { @class = "field-validation-error" })
+
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        <div class="input-group">
+                                            <div class="checkbox">
+                                                <label style="font-size:14px !important">
+                                                    @Html.DisplayNameFor(e => e.EnumMaster.IsActive)
+                                                    @Html.CheckBoxFor(e => e.EnumMaster.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center" style="margin:10px;">
+                                    @if (Model.EnumMaster.ID != 0)
+                                    {
+                                        <button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                            Update
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                            Add
+                                        </button>
+                                        <button type="button" class="btn btn-warning" id="btn_reset">
+                                            Reset
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section scripts{
+    <script>
+        var valid = true;
+        $(document).ready(function () {
+
+
+
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_form").show();
+
+
+            $("#btn_reset").click(function () {
+                $("#div_form").trigger("reset");
+            });
+        });
+
+
+        $("#EnumValue_txt").on("change", function () {
+             getAjax("@Url.Action("IsExsitsEnumEVal")", { EnumType: $("#Enumtype_txt").val(),EnumVal: $("#EnumValue_txt").val() },
+                 function (result) {
+                switch (result.status) {
+                    case "F":
+                        $(".txt_EnumValue").empty().text("This Enum Type,  Enum Value  combination already exsits.");
+                        $(".txt_EnumValue").show();
+                        valid = false;
+                        break;
+                    case "S":
+                        $(".hdn_idname").text = $(".txt_EnumValue").text;
+                        $(".txt_EnumValue").hide();
+                        valid = true;
+                        break;
+                    default:
+                }
+            }, function (request, error) {
+                alert(" Can't do because: " + error);
+            })
+        });
+
+        $("#EnumCode_txt").on("change", function () {
+             getAjax("@Url.Action("IsExsitsEnumEcode")", { EnumType: $("#Enumtype_txt").val(), EnumCode: $("#EnumCode_txt").val() },
+                 function (result) {
+                switch (result.status) {
+                    case "F":
+                        $(".txt_name").empty().text("This Enum Type, Enum Code  combination already exsits.");
+                        $(".txt_name").show();
+                        valid = false;
+                        break;
+                    case "S":
+                        $(".hdn_idname").text = $(".txt_name").text;
+                        $(".txt_name").hide();
+                        valid = true;
+                        break;
+                    default:
+                }
+            }, function (request, error) {
+                alert(" Can't do because: " + error);
+            })
+        });
+
+
+
+
+        function SaveData() {
+            var form_valid = $("form").valid();
+            if (form_valid && valid) {
+
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+
+                    var object = $("form").serializeArray();
+                    var json = {};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    getAjax("@Url.Action("AddUpdate")", json,
+                        function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $("#notification").empty().text(result.message);
+                            $("#notification_modal").modal("show").on(alignModal);
+                            setTimeout(function () {
+                                $('#notification_modal').slideUp("slow").modal("hide");
+                            }, 3000);
+                            Message = null;
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                            break;
+                        case "S":
+                            window.localStorage.setItem("Message", result.message);
+                            window.location.href = "@Url.Action("SummaryView")"
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                            alert(" Can't do because: " + error);
+                    })
+                }
+        }
+
+
+
+
+
+    </script>
+}

@@ -1,0 +1,249 @@
+﻿@model ZOI.BAL.ViewModels.ClientFamilyViewModel
+@using ZOI.BAL.Utilites
+
+@{
+    if (Model.clientFamily.Id != 0)
+    {
+        ViewData["Title"] = "Update Client Family";
+    }
+    else
+    {
+
+        ViewData["Title"] = "Add Client Family";
+    }
+
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("Index");
+}
+
+
+
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.clientFamily.FamilyName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.clientFamily.Id != 0)
+                                {
+
+                                    @Html.TextBoxFor(e => e.clientFamily.FamilyName, htmlAttributes: new { @readonly = true, @class = "form-control", @id = "txt_name" })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.clientFamily.FamilyName, htmlAttributes: new { @class = "form-control", @id = "txt_name", @onclick = "AllowAlpha()" })
+                                }
+                                @Html.ValidationMessageFor(e => e.clientFamily.FamilyName)
+                                @Html.HiddenFor(e => e.clientFamily.Id, htmlAttributes: new { @id = "hdn_id", @class = "form-control" })
+                                <span class="txt_name field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFamily.FamilyShortName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.clientFamily.Id != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.clientFamily.FamilyShortName, htmlAttributes: new { @class = "form-control", @id = "", @placeholder = "", @readonly = true })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.clientFamily.FamilyShortName, htmlAttributes: new { @class = "form-control", @id = "", @placeholder = "", @readonly = true })
+                                }
+                                @Html.ValidationMessageFor(e => e.clientFamily.FamilyShortName)
+                                <span class="txt_ifsccode field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFamily.GroupID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.clientFamily.GroupID, Model.GroupList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_country", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFamily.GroupID, "", new { @style = "margin-top: -35px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.clientFamily.CountryID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.clientFamily.CountryID, Model.CountryList, "--Select--", new { @class = "form-control select2-container--material", @id = "ddl_country", @style = "width:100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFamily.CountryID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.clientFamily.StateID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.clientFamily.StateID, Model.StateList, "--Select--", htmlAttributes: new { @class = "form-control select2-container--material", @id = "ddl_state", @style = "width:100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFamily.StateID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.clientFamily.CityID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.clientFamily.CityID, Model.CityList, "--Select--", new { @class = "form-control select2-container--material", @id = "ddl_city", @style = "width:100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFamily.CityID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.clientFamily.AddressLine1)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextAreaFor(e => e.clientFamily.AddressLine1, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(e => e.clientFamily.AddressLine1)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.clientFamily.AddressLine2)
+                                @Html.TextAreaFor(e => e.clientFamily.AddressLine2, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(e => e.clientFamily.AddressLine2)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.clientFamily.Pincode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.clientFamily.Pincode, htmlAttributes: new { @class = "form-control", @placeholder = "eg. 123456" })
+                                @Html.ValidationMessageFor(e => e.clientFamily.Pincode)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.DisplayNameFor(e => e.clientFamily.IsActive)
+                                        @Html.CheckBoxFor(e => e.clientFamily.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+                            @if (Model.clientFamily.Id != 0)
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" onclick="Reset()" id="btn_reset">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+
+    <script>
+        var valid = true;
+        var option = "<option value=''>--Select--</option>";
+        $(document).ready(function () {
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_form").show();
+        });
+
+        // Fill the state dropdown .
+        $(document).on("change", "#ddl_country", function () {
+               var countryid = $(this).val();
+                getAjax('@Url.Action("FillStates")', { countryID: countryid }, function (response, ct) {
+                    $("#ddl_city").empty().append('<option value="">--Select--</option>');
+                    if (response != null) {
+                        $("#ddl_state").html('<option value="">--Select--</option>');
+                        $.each(response.clientFamily.data.data, function (i, item) {
+                            $("#ddl_state").append($("<option></option>").val(item.value).html(item.text));
+                        });
+                    }
+                });
+            });
+
+        // Fill the city dropdown .
+        $(document).on("change", "#ddl_state", function () {
+                var stateId = $(this).val();
+                getAjax('@Url.Action("FillCities")', { stateID: stateId}, function (response, ct) {
+                    if (response != null) {
+                        $("#ddl_city").html('<option value="">--Select--</option>');
+                        $.each(response.clientFamily.data.data, function (i, item) {
+                            $("#ddl_city").append($("<option></option>").val(item.value).html(item.text));
+                        });
+                    }
+                });
+            });
+
+        // Check the duplicate name value on change.
+        $("#txt_name").on("change", function () {
+                getAjax("@Url.Action("IsExstis")", { name: $("#txt_name").val() }, function (result) {
+                    switch (result.status) {
+                        case "S":
+                            $(".txt_name").hide();
+                            valid = true;
+                            break;
+                        case "F":
+                            $(".txt_name").empty().text("The Name was already exsits.");
+                            $(".txt_name").show();
+                            valid = false;
+                            break;
+
+                        default:
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+        // Save data functionality.
+        function SaveData() {
+            // If the form was valid and the Fields was Unique it move to the  add  functionality
+            if ($("form").valid() && valid) {
+                $("#div_form").css("filter", "opacity(30%)")
+                $(".chart-loader").show();
+                var object = $("form").serializeArray();
+                var json = {};
+                $.each(object, function () {
+                    if (json[this.name] == undefined) {
+                        json[this.name] = this.value;
+                    }
+                });
+                postAjax("@Url.Action("AddUpdate")", json,
+                    function (result) {
+                        switch (result.status) {
+                            case "S":
+                                window.localStorage.clientFamily.setItem("Message", result.message);
+                                window.location.href = "@Url.Action("Index")"
+                            case "F":
+                                show_notification(result.message);
+                        }
+                    },
+                    function (request, error) {
+                        show_notification("Something went wrong");
+                    });
+            }
+            //Else show th error.
+            else {
+                show_notification("Form was not valid");
+            }
+        }
+
+    </script>
+}

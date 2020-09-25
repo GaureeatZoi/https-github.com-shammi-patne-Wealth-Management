@@ -1,0 +1,244 @@
+﻿@model ZOI.BAL.ViewModels.BankViewModel
+@using ZOI.BAL.Utilites
+@{
+    if (Model.bankMaster.Id != 0)
+    {
+
+        ViewData["Title"] = "Update Bank";
+    }
+    else
+    {
+        ViewData["Title"] = "Add Bank";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back"; ;
+    ViewData["URL"] = Url.Action("SummaryView") ;
+}
+
+
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row md-file-upload text-center" style="margin-bottom: 21px;">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            @if (Model.bankMaster.Logo == null)
+                            {
+                                <img src="~/Material Design/images/user_avatar.png" class="img-show" alt="" id="company_logo"
+                                     style="width:200px; height:200px;" />
+                            }
+                            else
+                            {
+                                <img src="~/Uploaded_Image/@Model.bankMaster.Logo" class="img-show " alt="" id="company_logo"
+                                     style="width:200px; height:200px;" />
+                            }
+
+                            @Html.HiddenFor(e => e.bankMaster.Logo, new { @id = "hdn_logo" })
+                            <input type="file" id="file_logo" asp-for="@Model.bankMaster.LogoFile" class="fileUpload" style="display:none" />
+                            <br />
+                            @Html.ValidationMessageFor(e => e.bankMaster.Logo)
+                            <span id="val_file_logo" class="text-center" style="color:red" hidden="hidden"></span>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <div class="row" style="text-align:left">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group is-empty">
+
+                                        @Html.DisplayNameFor(e => e.bankMaster.Name)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @if (Model.bankMaster.Id !=0 )
+                                        {
+                                            @Html.TextBoxFor(e => e.bankMaster.Name, htmlAttributes: new { @class = "form-control", @id = "txt_name",@readonly=true })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(e => e.bankMaster.Name, htmlAttributes: new { @class = "form-control", @id = "txt_name", @onkeypress = "AlphabetsWithSpace(event)" })
+                                        }
+                                        @Html.ValidationMessageFor(e => e.bankMaster.Name)
+                                        @Html.HiddenFor(e => e.bankMaster.Id, htmlAttributes: new { @class = "form-control", @id = "hdn_id" })
+                                        <span class="txt_name field-validation-error" style="color:red"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="input-group">
+                                        <div class="checkbox">
+                                            <label>
+                                                @Html.DisplayNameFor(e => e.bankMaster.IsActive)
+                                                @Html.CheckBoxFor(e => e.bankMaster.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="text-center" style="margin:10px;">
+
+                                    @if (Model.bankMaster.Id != 0)
+                                    {
+                                        <input type="button" id="" class="btn btn-success" onclick="SaveData()" value="Update" />
+                                    }
+                                    else
+                                    {
+                                        <input type="button" id="" class="btn btn-success" onclick="SaveData()" value="Add" />
+                                        <input type="button" class="btn btn-warning" id="" onclick="Reset()" value="Reset" />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+
+    <script>
+        var valid = false;
+        $(document).ready(function () {
+            $(".chart-loader").hide();
+            $("#div_form").css("filter", "opacity(100%)").show();
+
+        });
+        // Check the duplicate name value on change.
+            $("#txt_name").on("change", function () {
+                getAjax("@Url.Action("IsExstis")", { name: $("#txt_name").val(), ID: $("#hdn_id").val() }, function (result) {
+                    // If the result status was "S" then there is no duplicate data in database.
+                    // Else show the sapn error.
+                    switch (result.status) {
+                        case "S":
+                            $(".txt_name").hide();
+                            valid = true;
+                            break;
+                        case "F":
+                            $(".txt_name").empty().text("The Name was already exsits.");
+                            $(".txt_name").show();
+                            valid = false;
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                    show_notification("Somethimg went wrong, Please reload or Refresh the Page.");
+                })
+            });
+
+            $("#company_logo").click(function () {
+                $(".fileUpload").click();
+            });
+
+            // Check the file was valid one or not
+            $('.fileUpload').change(function () {
+                var $this = $(this);
+                var file = this.files[0];
+                var fileType = file["type"]; //check the files type.
+                var validImageTypes = ["image/png"]; //check the files extention.
+                var check = $.inArray(fileType, validImageTypes);
+                if ($.inArray(fileType, validImageTypes) == 0) {
+                    if (this.files && this.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = function (e) {
+                            var image = new Image();
+                            image.src = e.target.result;
+                            image.onload = function () {
+                                var height = this.height;
+                                var width = this.width;
+                                // In here checking the height ad width and return the status as true
+                                if (height == 512 || width == 512) {
+                                    $("#company_logo").show().attr('src', e.target.result);
+                                    $("#val_file_logo").text("").hide();
+                                    return true;
+                                }
+                                 // If it was not fit to the size it show the error log.
+                                else {
+                                    $("#val_file_logo").text("Height and Width must be in 128px.").show();
+                                    $('.fileUpload').val("");
+                                    return false;
+                                }
+                            };
+                        }
+                        reader.readAsDataURL(this.files[0]);
+                    } else {
+                        $("#val_file_logo").text("Please select PNG valid image.").show();
+                        $('.fileUpload').val("");
+                    }
+                }
+                else {
+                    $("#val_file_logo").text("Please selece BMP valid image.").show();
+                    $('.fileUpload').val("");
+                }
+            });
+
+            //Save data function.
+            function SaveData() {
+              // If the form is valid it goes to the next funcctionality.
+                if ($("form").valid() && $("#hdn_logo").val() != null || $("#hdn_logo").val() != '') {
+                $("#div_form").css("filter", "opacity(30%)")
+                $(".chart-loader").show();
+                var file = $("#file_logo").get(0).files;
+                var data = new FormData;
+                data.append("LogoFile", file[0]);
+                data.append("Logo", $("#hdn_logo").val());
+                data.append("Id", $("#hdn_id").val());
+                //  Here we use the post ajax call to pass the data
+                $.ajax({
+                    type: "post",
+                    url: "@Url.Action("UploadLogo")",
+                    data: data,
+                    dataType: "JSON",
+                    contentType: false,
+                    processData: false,
+                    success: function (result) {
+                         // If the result status gives "S" as response means it move to the next process to upload the model value
+                        switch (result.status) {
+                            case "S":
+                                 $("#hdn_logo").val(result.data);
+                            var object = $("form").serializeArray();
+                            var json = {};
+                            $.each(object, function () {
+                                if (json[this.name] == undefined) {
+                                    json[this.name] = this.value;
+                                }
+                            });
+                            //  Here we use the post ajax call to pass the data
+                            postAjax("@Url.Action("AddUpdate")", json,
+                                function (result) {
+                                    switch (result.status) {
+                                        case "S":
+                                            window.localStorage.setItem("Message", result.message);
+                                            window.location.href = "@Url.Action("SummaryView")"
+                                            break;
+                                        case "F":
+                                            show_notification(result.message);
+                                            break;
+                                    }
+                                },
+                                function (request, error) {
+                                    show_notification("Something went wrong")
+                                });
+                                break;
+                            case "F":
+                                show_notification(result.message);
+                                $("#val_file_logo").text("Please upload the Image File").show();
+                                break;
+                            default:
+                        }
+                    },
+                    error: function (error) {
+                        show_notification("Something went wrong.");
+                    }
+                });
+                }
+            else {
+                    show_notification("Form was not valid check the data.");
+                    if ($("#hdn_logo").val() != null || $("#hdn_logo").val() != '') {
+                        $("#val_file_logo").text("Please upload the Image File").show();
+                    }
+            }
+        }
+    </script>
+
+}
+
+

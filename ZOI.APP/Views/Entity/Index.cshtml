@@ -1,0 +1,488 @@
+﻿@model ZOI.BAL.ViewModels.EntityViewModel
+@using ZOI.BAL.Utilites
+@{
+    if (Model.entity.ID == 0)
+    {
+        ViewData["Title"] = "Add Entity";
+    }
+    else
+    {
+        ViewData["Title"] = "Update Entity";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                    <div class="row">
+                        @{
+                            if (Model.entity.ID == 0)
+                            { <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.entity.EntityTypeID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.entity.EntityTypeID, Model.EntityType ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_EntityType", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.entity.EntityTypeID, "", new { @style = "margin-top: 0px !important;" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.HiddenFor(e => e.entity.ID, htmlAttributes: new { @id = "hdn_id" })
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.entity.EntityTypeID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.entity.EntityTypeName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumeric(event)", id = "txt_name", @readonly = "true" })
+                                        @Html.HiddenFor(e => e.entity.EntityTypeID, htmlAttributes: new { @id = "hdn_entitytypeid" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.entity.EntityCode)
+                                        @Html.TextBoxFor(e => e.entity.EntityCode, htmlAttributes: new { @class = "form-control", @readonly = true })
+                                        @Html.HiddenFor(e => e.entity.ID, htmlAttributes: new { @id = "hdn_id" })
+                                    </div>
+                                </div>
+                                }
+                            }
+                            </div>
+                    <div class="row">
+                       
+                        <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.entity.FirstName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @{
+                                    if (Model.entity.ID == 0)
+                                    { @Html.TextBoxFor(e => e.entity.FirstName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)", id = "txt_name" })
+                                }
+                                else
+                                { @Html.TextBoxFor(e => e.entity.FirstName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumeric(event)", id = "txt_name", @readonly = "true" })
+                            }
+                                }
+                               
+                                @Html.ValidationMessageFor(e => e.entity.FirstName, "", new { @class = "field-validation-error" })
+
+                                <span class="txt_name" style="color:red"></span>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.entity.LastName)
+                                @Html.TextBoxFor(e => e.entity.LastName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumeric(event)" })
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.entity.CountryID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.entity.CountryID, Model.Country ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_country", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.entity.CountryID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.entity.StateID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.entity.StateID, Model.State ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_state", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.entity.StateID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.entity.CityID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.entity.CityID, Model.City ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_city", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.entity.CityID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.entity.AddressLine1)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.entity.AddressLine1, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                                @Html.ValidationMessageFor(e => e.entity.AddressLine1, "", new { @class = "field-validation-error" })
+
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.entity.AddressLine2)
+                                @Html.TextBoxFor(e => e.entity.AddressLine2, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.entity.Pincode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.entity.Pincode, htmlAttributes: new { @class = "form-control", @onkeypress = "Numeric(event)", @maxlength = "6" , @minlength = "6" })
+                                @Html.ValidationMessageFor(e => e.entity.Pincode, "", new { @class = "field-validation-error" })
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.entity.ContactPersonName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.entity.ContactPersonName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                                @Html.ValidationMessageFor(e => e.entity.ContactPersonName, "", new { @class = "field-validation-error" })
+
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.entity.ContactEmail)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.entity.ContactEmail, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(e => e.entity.ContactEmail, "", new { @class = "field-validation-error" })
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.entity.ContactNumber)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.entity.ContactNumber, htmlAttributes: new { @class = "form-control", @onkeypress = "Numeric(event)", @maxlength = "10", @minlength = "10" })
+                                @Html.ValidationMessageFor(e => e.entity.ContactNumber, "", new { @class = "field-validation-error" })
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        <label style="font-size:20px !important">
+                                            @Html.LabelFor(e => e.entity.IsActive)
+                                            @Html.CheckBoxFor(e => e.entity.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(e => e.franchiseMapping.ID, htmlAttributes: new { @id = "hdn_franid" })
+                    @{
+                        if (Model.entity.ID != 0 && Model.entity.EntityTypeID == 1)
+                        {
+                            <div class="row" id="div_branchreg">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        <label style="font-size:20px !important">
+                                            @Html.Label("Branch Registration")
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.branchMapping.ManagerID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.branchMapping.ManagerID, Model.Manager ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_manager", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.branchMapping.ManagerID, "", new { @class = "field-validation-error" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        <div class="input-group">
+                                            <div class="checkbox">
+                                                <label style="font-size:20px !important">
+                                                    @Html.LabelFor(e => e.branchMapping.IsHO)
+                                                    @Html.CheckBoxFor(e => e.branchMapping.IsHO, htmlAttributes: new { @class = "checkbox" })
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @Html.HiddenFor(e => e.branchMapping.ID, htmlAttributes: new { @id = "hdn_branchid" })
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row" id="div_branchreg" style="display: none">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        <label style="font-size:20px !important">
+                                            @Html.Label("Branch Registration")
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.branchMapping.ManagerID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.branchMapping.ManagerID, Model.Manager ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_manager", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.branchMapping.ManagerID, "", new { @class = "field-validation-error1" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        <div class="input-group">
+                                            <div class="checkbox">
+                                                <label style="font-size:14px !important">
+                                                    @Html.LabelFor(e => e.branchMapping.IsHO)
+                                                    @Html.CheckBoxFor(e => e.branchMapping.IsHO, htmlAttributes: new { @class = "checkbox" })
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @Html.HiddenFor(e => e.branchMapping.ID, htmlAttributes: new { @id = "hdn_branchid" })
+
+                            </div>
+                        }
+                    }
+                    @{
+                        if (Model.entity.ID != 0 && Model.entity.EntityTypeID == 3)
+                        {
+
+                            <div class="row" id="div_SubBrokerreg">
+
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                  <label style="font-size:20px !important">
+                                                                @Html.Label("Sub Broker Registration")
+                                                                @Html.HiddenFor(e => e.subbrokerMapping.ID, htmlAttributes: new { @id = "hdn_subbrokid" })
+                                                       </label>
+                           </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.subbrokerMapping.SEBIRegistrationNo)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.subbrokerMapping.SEBIRegistrationNo, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumeric(event)", @maxlength = "50" })
+                                        @Html.ValidationMessageFor(e => e.subbrokerMapping.SEBIRegistrationNo, "", new { @class = "field-validation-error" })
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.subbrokerMapping.SEBIRegistrationDate)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.subbrokerMapping.SEBIRegistrationDate, "{0:MM/dd/yyyy}", htmlAttributes: new { placeholder = "mm/dd/yyyy", @class = "date form-control" })
+                                        @Html.ValidationMessageFor(e => e.subbrokerMapping.SEBIRegistrationDate, "", new { @class = "field-validation-error" })
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="row" id="div_SubBrokerreg" style="display: none">
+
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        <label style="font-size:20px !important">
+                                            @Html.Label("Sub Broker Registration")
+                                            @Html.HiddenFor(e => e.subbrokerMapping.ID, htmlAttributes: new { @id = "hdn_subbrokid" })
+                                     </label>
+                                            </div>
+                                </div>
+                                <div id="div_branchreg" class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.subbrokerMapping.SEBIRegistrationNo)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.subbrokerMapping.SEBIRegistrationNo, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumeric(event)", @maxlength = "50" })
+                                        @Html.ValidationMessageFor(e => e.subbrokerMapping.SEBIRegistrationNo, "", new { @class = "field-validation-error" })
+
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.subbrokerMapping.SEBIRegistrationDate)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.subbrokerMapping.SEBIRegistrationDate, "{0:MM/dd/yyyy}", htmlAttributes: new { placeholder = "mm/dd/yyyy", @class = "date form-control" })
+                                     
+                                        @Html.ValidationMessageFor(e => e.subbrokerMapping.SEBIRegistrationDate, "", new { @class = "field-validation-error" })
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        }
+                    }
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+                            @if (Model.entity.ID != 0)
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" id="btn_reset">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                        </div>
+        </div>
+        </div>
+</form>
+@section scripts{
+    <script>
+        var valid = true;
+        $(document).ready(function () {
+            var option = "<option value=''>--Select--</option>";
+
+
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_form").show();
+           
+            $(".select2-container--material").select2({
+                    theme: "material",
+                });
+           
+
+            $("#ddl_EntityType").on("change", function () {
+                if ($("#ddl_EntityType").select2("val") == '1') {
+                    $("#div_branchreg").show();
+                    $("#div_SubBrokerreg").hide();
+                };
+                if ($("#ddl_EntityType").select2("val") == '2') {
+                    $("#div_branchreg").hide();
+                    $("#div_SubBrokerreg").hide();
+                };
+                if ($("#ddl_EntityType").select2("val") == '3') {
+                $("#div_SubBrokerreg").show();
+                $("#div_branchreg").hide();
+            };
+             });
+            $("#div_form").show();
+            
+            //});
+            $("#ddl_country").on("change", function () {
+                getAjax("@Url.Action("GetStateList")", { CountryID: $(this).val() }, function (result) {
+                    console.log(result);
+                   $.each(result, function (index, val) {
+                        console.log(val.value);
+                        console.log(val.text);
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_state").empty().append(option);
+                    $("#ddl_city").empty();
+                    option = "<option value=''>--Select--</option>";
+                    $("#ddl_city").empty().append(option);
+                }, function () {})
+            })
+            $("#div_form").show();
+            $("#ddl_state").on("change", function () {
+                getAjax("@Url.Action("GetCityList")", { StateID: $(this).val() }, function (result) {
+                    console.log(result);
+                       $.each(result, function (index, val) {
+                        console.log(val.value);
+                        console.log(val.text);
+                                option += "<option value='" + val.value + "'>" + val.text +" </option>"
+                            });
+                            $("#ddl_city").empty().append(option);
+                    option = "<option value=''>--Select--</option>";
+                }, function () {})
+            })
+
+            $("#div_form").show();
+
+
+            $("#btn_reset").click(function () {
+                $("#div_form").trigger("reset");
+            });
+        });
+
+       
+       
+        $('.date').datepicker({
+            format: 'MM/dd/yyyy',
+             //dateFormat: 'dd/mm/yyyy' 
+        });
+        $(".date").val(""); 
+
+         $("#txt_name").on("change", function () {
+            getAjax("@Url.Action("IsExstis")", { name: $("#txt_name").val()}, function (result) {
+                switch (result.status) {
+                    case "F":
+                        $(".txt_name").empty().text("The Entity name already exsits.");
+                        $(".txt_name").show();
+                        valid = false;
+                        break;
+                    case "S":
+                        $(".hdn_idname").text = $(".txt_name").text;
+                        $(".txt_name").hide();
+                        valid = true;
+                        break;
+                    default:
+                }
+            }, function (request, error) {
+                alert(" Can't do because: " + error);
+            })
+        });
+
+
+        function SaveData() {
+            var form_valid = $("form").valid();
+            if (form_valid && valid) {
+
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+
+                    var object = $("form").serializeArray();
+                    var json = {};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    getAjax("@Url.Action("AddUpdate")", json,
+                        function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $("#notification").empty().text(result.message);
+                            $("#notification_modal").modal("show").on(alignModal);
+                            setTimeout(function () {
+                                $('#notification_modal').slideUp("slow").modal("hide");
+                            }, 3000);
+                            Message = null;
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                            break;
+                        case "S":
+                            window.localStorage.setItem("Message", result.message);
+                            window.location.href = "@Url.Action("SummaryView")"
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                            alert(" Can't do because: " + error);
+                    })
+                }
+        }
+
+
+
+
+
+    </script>
+}

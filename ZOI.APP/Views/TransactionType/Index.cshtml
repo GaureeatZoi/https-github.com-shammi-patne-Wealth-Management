@@ -1,0 +1,118 @@
+﻿@model ZOI.BAL.ViewModels.TransactionTypeViewModel
+@using ZOI.BAL.Utilites
+@{
+    if (Model.transactionTypes.ID != 0)
+    {
+        ViewData["Title"] = "Update Transaction Types";
+    }
+    else
+    {
+        ViewData["Title"] = "Add Transaction Types";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.transactionTypes.Type)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.transactionTypes.Type, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlpha()", @id = "txt_name" })
+                                @Html.ValidationMessageFor(e => e.transactionTypes.Type)
+                                @Html.HiddenFor(e => e.transactionTypes.ID, htmlAttributes: new { @class = "form-control", @id = "hdn_id" })
+                                <span class="txt_name field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.transactionTypes.Nature)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.transactionTypes.Nature, Model.TransactionNatureList, Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%", @id = "ddl_rta" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.transactionTypes.Nature, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    @Html.DisplayNameFor(e => e.transactionTypes.IsActive)
+                                    <label>
+                                        @Html.CheckBoxFor(e => e.transactionTypes.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+                            @if (Model.transactionTypes.ID != 0)
+                            {
+                                <input type="button" onclick="SaveData()" class="btn btn-success" value="Update" />
+                            }
+                            else
+                            {
+                                <input type="button" onclick="SaveData()" class="btn btn-success" value="Add" />
+                                <input type="button" class="btn btn-warning" onclick="Reset()" value="Reset" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+</form>
+
+@section scripts{ 
+    <script>
+
+        $(document).ready(function () {
+            $(".chart-loader").hide();
+            $("#div_form").show();
+        });
+
+      //  Save the Data.
+        function SaveData() {
+            $('#confirmation_modal').slideUp("slow").modal("hide");
+
+                if ($("form").valid()) {
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+                    var object = $("form").serializeArray();
+                    var json = {};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    postAjax("@Url.Action("Index")", json,
+                        function (result) { 
+                            if (result.status=="S") {
+                                window.localStorage.setItem("Message", result.message);
+                                    window.location.href = "@Url.Action("SummaryView")"
+                            } else {
+                                show_notification(result.message);
+                                $(".chart-loader").hide();
+                                $("#div_form").show();
+                            }
+                            console.log(result);
+                           
+                        }, function (request) {
+                            show_notification("Somethimg went wrong");
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                        })
+                } else {
+                    show_notification("Form was not valid please check the data.");
+                }
+        }
+
+    </script>
+
+}
+
+

@@ -1,0 +1,284 @@
+﻿@model ZOI.BAL.ViewModels.MenuViewModel
+@using ZOI.BAL.Utilites
+@{
+    if (Model.menu.ID == 0)
+    {
+        ViewData["Title"] = "Add Menu";
+    }
+    else
+    {
+        ViewData["Title"] = "Update Menu";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+<form id="form">
+    <div id="div_form" class="container-fluid" style="display: none ;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                <div class="checkbox">
+                                    <label style="font-size:15px ">
+                                        @Html.DisplayNameFor(e => e.menu.IsParentMenu)
+                                        @Html.CheckBoxFor(e => e.menu.IsParentMenu, htmlAttributes: new { @class = "checkbox", @id = "chk_parentmenu", @checked = "checked" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                <div class="checkbox">
+                                    <label style="font-size:15px ">
+                                        @Html.DisplayNameFor(e => e.menu.IsSubMenu)
+                                        @Html.CheckBoxFor(e => e.menu.IsSubMenu, htmlAttributes: new { @class = "checkbox", @id = "chk_submenu", @checked = "checked" })
+                                    </label>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.ParentMenuId)<span class="Is_Mandetory" style="color: red"> <strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.menu.ParentMenuId, Model.MenuList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_parentmenu", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                <span class="DD_Parent field-validation-error" style=" margin-top: -7px !important;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.GroupID)<span class="Is_Mandetory" style="color: red"> <strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.menu.GroupID, Model.GroupList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_group", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                <span class="span_group field-validation-error" style=" margin-top: -7px !important;"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.MenuName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.menu.ID != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.menu.MenuName, htmlAttributes: new { @class = "form-control", @readonly = true })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.menu.MenuName, htmlAttributes: new { @class = "form-control", @id = "txt_menu", @onkeypress = "AlphabetsWithSpace(event)" })
+                                }
+                                @Html.HiddenFor(e => e.menu.ID, htmlAttributes: new { @id = "hdn_id" })
+                                @Html.ValidationMessageFor(e => e.menu.MenuName)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.MenuIcon)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.menu.MenuIcon, htmlAttributes: new { @class = "form-control", @id = "txt_menu_icon", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                                @Html.ValidationMessageFor(e => e.menu.MenuIcon, "", htmlAttributes: new { @class = "field-validation-error" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.MenuOrder)<span id="spn_2" style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.menu.MenuOrder, htmlAttributes: new { @class = "form-control", @id = "txt_menu_order", @onkeypress = "AlphaNumeric(event)" })
+                                @Html.ValidationMessageFor(e => e.menu.MenuOrder, "", htmlAttributes: new { @class = "field-validation-error" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.ControllerName)<span class="Is_Mandetory" style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.menu.ControllerName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphaNumeric(event)", @id = "txt_controller" })
+                                <span class="txt_ControllerName field-validation-error"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.ActionName)<span class="Is_Mandetory" style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.menu.ActionName, htmlAttributes: new { @class = "form-control", @id = "txt_action", @onkeypress = "AlphaNumeric(event)" })
+                                <span class="txt_ActionName field-validation-error"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.Params1)
+                                @Html.TextBoxFor(e => e.menu.Params1, htmlAttributes: new { @class = "form-control", @id = "txt_param1", @onkeypress = "AlphaNumeric(event)" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.menu.Params2)
+                                @Html.TextBoxFor(e => e.menu.Params2, htmlAttributes: new { @class = "form-control", @id = "txt_param2", @onkeypress = "AlphaNumeric(event)" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                <div class="checkbox">
+                                    <label style="font-size:16px ">
+                                        @Html.DisplayNameFor(e => e.menu.IsActive)
+                                        @Html.CheckBoxFor(e => e.menu.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+                            @if (Model.menu.ID != 0)
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" id="btn_reset">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+@section scripts{
+    <script>
+        var valid = true;
+        var option = "<option value=''>--Select--</option>";
+
+        $(document).ready(function () {
+            $(".chart-loader").attr("style", "display:none");
+            $(".select2-container--material").select2({
+                theme: "material",
+            });
+            $("#div_form").show();
+
+        });
+
+        $("#txt_menu").on("change", function () {
+            getAjax("@Url.Action("IsExstis")", { name: $("#txt_Menu").val() },
+                function (result) {
+                switch (result.status) {
+                    case "F":
+                        $(".text-Menu").empty().text("The Menu already exsits.");
+                        $(".text-Menu").show();
+                        valid = false;
+                        break;
+                    case "S":
+                        $(".text-Menu").hide();
+                        valid = true;
+                        break;
+                    default:
+                }
+            }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+        $('#chk_parentmenu').click(function ()
+        {
+            if ($(this).is(':checked'))
+            {
+                $('#chk_submenu').prop("checked", false);
+                $('#ddl_group').prop('disabled', true);
+                $('#txt_controller').prop('disabled', true);
+                $('#txt_action').prop('disabled', true);
+                $('#txt_param1').prop('disabled', true);
+                $('#txt_param2').prop('disabled', true);
+                $('#ddl_parentmenu').prop('disabled', true);
+
+            }
+            else
+            {
+                $('#ddl_group').prop('disabled', false);
+                $('#txt_controller').prop('disabled', false);
+                $('#txt_action').prop('disabled', false);
+                $('#txt_param1').prop('disabled', false);
+                $('#txt_param2').prop('disabled', false);
+                $('#ddl_parentmenu').prop('disabled', false);
+            }
+        });
+
+        $('#chk_submenu').click(function () {
+            if ($(this).is(':checked')) {
+                $('#chk_parentmenu').prop("checked", false);
+                $('#ddl_group').prop('disabled', true);
+                $('#txt_controller').prop('disabled', true);
+                $('#txt_action').prop('disabled', true);
+                $('#txt_param1').prop('disabled', true);
+                $('#txt_param2').prop('disabled', true);
+                getAjax("@Url.Action("FillMenuDropdown")", {Flag:1}, function () {
+
+                });
+            }
+            else {
+                $('#ddl_group').prop('disabled', false);
+                $('#txt_controller').prop('disabled', false);
+                $('#txt_action').prop('disabled', false);
+                $('#txt_param1').prop('disabled', false);
+                $('#txt_param2').prop('disabled', false);
+                getAjax("@Url.Action("FillMenuDropdown")", {Flag:2}, function () {
+
+                });
+            }
+        });
+
+        function validate() {
+            var form_valid = $("form").valid();
+            if ($('#chk_isParent').is(':checked')) {
+
+            }
+            else if ($('#chk_submenu').is(':checked')) {
+
+            }
+            else {
+
+            }
+            if (form_valid) {
+
+            }
+        }
+
+        function SaveData() {
+            if ($("form").valid()) {
+                $(".chart-loader").show();
+                $("#div_form").hide();
+                var object = $("form").serializeArray();
+                var json = {};
+                $.each(object, function () {
+                    if (json[this.name] == undefined) {
+                        json[this.name] = this.value;
+                    }
+                });
+                getAjax("@Url.Action("AddUpdate")", json,
+                    function (result) {
+                        switch (result.status) {
+                            case "F":
+                                show_notification(result.message);
+                                $(".chart-loader").hide();
+                                $("#div_form").show();
+                                break;
+                            case "S":
+                                window.localStorage.setItem("Message", result.message);
+                                window.location.href = "@Url.Action("SummaryView")"
+                                break;
+                            default:
+                        }
+                    }, function (request, error) {
+                        show_notification("Somethimg went wrong");
+                        $(".chart-loader").hide();
+                        $("#div_form").show();
+                    })
+            }
+        }
+
+    </script>
+}

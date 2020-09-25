@@ -1,0 +1,257 @@
+﻿@inject SignInManager<ZOI.BAL.Models.ApplicationUser> signManager;
+@inject UserManager<ZOI.BAL.Models.ApplicationUser> userManager;
+@{
+    var userId = string.Empty;
+    if (signManager.IsSignedIn(User))
+    {
+        var user = await userManager.GetUserAsync(User);
+        userId = user.Id;
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <title>SAPPHIRE</title>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1,maximum-scale=1" name="viewport">
+    <meta name="description" content="" />
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <link href="favicon.ico" rel="shortcut icon">
+
+    <link href="https://fonts.googleapis.com/css?family=Heebo:400,500,700&display=swap" rel="stylesheet">
+    <link href="~/Assets/css/bootstrap.css" rel="stylesheet">
+    <link href="~/Assets/css/site.css" rel="stylesheet">
+
+
+    <link href="~/Material Design/css/vendor.bundle.css" rel="stylesheet" />
+    <link href="~/Material Design/css/app.bundle.css" rel="stylesheet" />
+    <link href="~/Material Design/css/googlefonts.css" rel="stylesheet" />
+    <link href="~/Material Design/css/theme-a.css" rel="stylesheet" />
+    <link href="~/Material Design/css/site.css" rel="stylesheet" />
+    <link href="~/jqueryui/jquery-ui.css" rel="stylesheet" />
+    <link href="~/Assets/css/datepicker.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="~/Material Design/css/layout-style.css" rel="stylesheet" />
+    <link href="~/Material Design/css/toastr.css" rel="stylesheet" />
+    <link href="~/Assets/css/daterangepicker.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    @*Gouree Madam *@
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.5/css/responsive.dataTables.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.6.2/css/buttons.dataTables.min.css" />
+    <link href="~/select2/css/select2.css" rel="stylesheet" />
+
+    <link href="~/Material Design/css/callout.css" rel="stylesheet" />
+
+    <style>
+        /* .container {
+            margin-left: -40px !important;
+        }*/
+
+        .dropbtn {
+            margin-top: 7px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+            .dropdown-content a {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+            }
+
+                .dropdown-content a:hover {
+                    background-color: #ddd;
+                }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+        }
+
+        .slideNav.slideNavover {
+            width: 250px !important;
+        }
+
+        .slideNav.navHide {
+            width: 250px !important;
+            overflow-y: auto;
+        }
+
+        footer {
+            background: #f7f7f7;
+            color: #929292;
+            border-top: solid 1px #fff;
+            margin-top: 50px;
+            padding: 15px 0;
+            font-size: 12px;
+            overflow: hidden;
+            position: fixed;
+            bottom: 0;
+            max-width: calc(100% - 70px) !important;
+            width: 100%;
+            right: 45px;
+            z-index: 100;
+        }
+
+        .slideNav {
+            right: 0 !important;
+            bottom: 0 !important;
+            background: #fff !important;
+        }
+
+        .close-nav {
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashbord"></div>
+    <header>
+        <div class="overlayer"></div>
+        <div class="container-fluid">
+            <div class="logo">
+                <a href="#"><img src="~/Assets/images/logo.png"> <span> SAPPHIRE</span></a>
+            </div>
+
+            @*@if (signManager.IsSignedIn(User))
+            {
+                <div class="userIcn">
+                    <ul class="headerMenu">
+                        <div class="dropdown" style="margin-right: 71px;">
+                            <li class="dropbtn">Select Report</li>
+                            <div class="dropdown-content">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="Dashboard">Product Wise Summary</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Dashboard" asp-action="MFWiseReport">MF Wise Summary</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="BookedGainLossReport" asp-action="Index">Booked Gain / Loss Report</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MfReports" asp-action="TransactionReport">Transaction Report</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MfReports" asp-action="DividentReport">Dividend Report</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MfReports" asp-action="CorpusInOutReport">Corpus In/Out Report</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MfReports" asp-action="InterestStatement">Interest Statement Report</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MfReports" asp-action="MaturityReport">Maturity Report (Maturing In Next 30 Days)</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MfReports" asp-action="CashSummary">Cash Summary</a>
+                            </div>
+                        </div>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark">@User.Identity.Name</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">SignOut</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark common-filters"><span class="fa fa-filter"></span></a>
+                        </li>
+                    </ul>
+                </div>
+            }
+            else
+            {*@
+                <div class="userIcn">
+                    <ul class="headerMenu">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            @*}*@
+        </div>
+    </header>
+
+    <div class="container mt-20 pt-60">
+        @RenderBody()
+        <div class="card">
+            <div class="slideNav navHide" style="display:none">
+                <ul class="firstpane">
+                    <li>
+                        <a class="close-nav"><i class="fa fa-window-close"></i></a>
+                        <div id="dashboard_filters">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    @*<div class="card">
+            <div class="slideNav navHide" style="display:none">
+                <ul class="firstpane">
+                    <li>
+                        <a class="close-nav"><i class="fa fa-window-close"></i></a>
+                        <div id="dashboard_filters">
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>*@
+
+    <footer>
+        <div class="FL">Developed by: <a href="#"><strong>ZOI FINTECH SERVICES</strong></a></div>
+        <div class="FR">Copyright © 2019-2020.  All Rights Reserved <a href="#" class="pl-3">Privacy Policy</a></div>
+    </footer>
+    <script src="~/Assets/js/jquery.min.js"></script>
+    @*<script src="~/Material Design/js/vendor.bundle.js"></script>
+        <script src="~/Material Design/js/app.bundle.js"></script>*@
+    <script src="~/jqueryui/jquery-ui.js"></script>
+    <script src="~/select2/js/select2.js"></script>
+    <script src="~/Material Design/js/utility.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script type="text/javascript" src="~/Assets/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="~/Assets/js/image-uploader.min.js"></script>
+    <script type="text/javascript" src="~/Assets/js/multi-selector.js"></script>
+    <script type="text/javascript" src="~/Assets/js/custom.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="~/Assets/js/bootstrap-datepicker.js"></script>
+    <script src="~/Assets/js/daterangepicker.min.js"></script>
+    @*Gouree Madam*@
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.5/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.6.2/js/buttons.colVis.min.js"></script>
+    <script>
+          getAjax('@Url.Action("GetFilters","Dashboard")', {}, function (response, ct) {
+                    if (ct == 'html') {
+                        $("#dashboard_filters").empty();
+                        $("#dashboard_filters").append(response);
+
+                    }
+                });
+        $(".common-filters").click(function () {
+            $(".slideNav").show();
+        });
+        $(".close-nav").click(function () {
+            $(".slideNav").hide();
+        });
+
+        //$(document).on("change", "#ddl_customer", function () {
+
+        //});
+
+        //$(document).on("change", "#ddl_customer_proto_type", function () {
+
+        //});
+
+        //$(document).on("change", "#ddl_account_level", function () {
+
+        //});
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,107 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<CopyRefAssembliesToPublishDirectory>false</CopyRefAssembliesToPublishDirectory>
+		<UserSecretsId>3f3114d0-2a22-4f36-8ae1-9c4ad4f6e302</UserSecretsId>
+		<DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Compile Remove="Models\Base\**" />
+		<Compile Remove="Models\ViewModels\**" />
+		<Compile Remove="Views\Bank\**" />
+		<Compile Remove="Views\ClintsFamily\**" />
+		<Compile Remove="Views\GeneralMasters\**" />
+		<Compile Remove="Views\IvestorCategoryMaster\**" />
+		<Compile Remove="wwwroot\NewFolder\**" />
+		<Content Remove="Models\Base\**" />
+		<Content Remove="Models\ViewModels\**" />
+		<Content Remove="Views\Bank\**" />
+		<Content Remove="Views\ClintsFamily\**" />
+		<Content Remove="Views\GeneralMasters\**" />
+		<Content Remove="Views\IvestorCategoryMaster\**" />
+		<Content Remove="wwwroot\NewFolder\**" />
+		<EmbeddedResource Remove="Models\Base\**" />
+		<EmbeddedResource Remove="Models\ViewModels\**" />
+		<EmbeddedResource Remove="Views\Bank\**" />
+		<EmbeddedResource Remove="Views\ClintsFamily\**" />
+		<EmbeddedResource Remove="Views\GeneralMasters\**" />
+		<EmbeddedResource Remove="Views\IvestorCategoryMaster\**" />
+		<EmbeddedResource Remove="wwwroot\NewFolder\**" />
+		<None Remove="Models\Base\**" />
+		<None Remove="Models\ViewModels\**" />
+		<None Remove="Views\Bank\**" />
+		<None Remove="Views\ClintsFamily\**" />
+		<None Remove="Views\GeneralMasters\**" />
+		<None Remove="Views\IvestorCategoryMaster\**" />
+		<None Remove="wwwroot\NewFolder\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Controllers\ClientMainContoller.cs" />
+		<Compile Remove="Controllers\ClintsFamilyController.cs" />
+		<Compile Remove="Controllers\DashboardController.cs" />
+		<Compile Remove="Models\BookedGainLossSummaryParameters.cs" />
+		<Compile Remove="Models\BookingInfoViewModel.cs" />
+		<Compile Remove="Models\DashboardParameters.cs" />
+		<Compile Remove="Models\JsonResponse.cs" />
+		<Compile Remove="Models\MFWiseSummaryParameters.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Remove="Views\ClientFamily\ClientsFamily.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="bootstrap" Version="4.5.0" />
+		<PackageReference Include="ComponentSpace.Saml2" Version="3.0.0" />
+		<PackageReference Include="EPPlus" Version="5.2.0" />
+		<PackageReference Include="IdentityServer4" Version="2.5.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.3" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="NPOI" Version="2.5.1" />
+		<PackageReference Include="RestSharp" Version="106.11.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\ZOI.DAL\ZOI.DAL.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\Uploaded_Image\" />
+		<Folder Include="wwwroot\Assets\fonts\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Update="wwwroot\Material Design\css\jquery.dataTables.min.css">
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,427 @@
+﻿@model ZOI.BAL.ViewModels.RolePermissionViewModel
+@using ZOI.BAL.Utilites
+@{
+
+    ViewData["Title"] = "Role Menu Permission";
+}
+<style>
+
+    th.dt-center, td.dt-center {
+        text-align: center;
+    }
+
+    thead .checkbox input[type=checkbox]:checked +
+    .checkbox-material .check:before, label.checkbox-inline input[type=checkbox]:checked + .checkbox-material .check:before {
+        color: #2196f3 !important;
+        /*        border-color: #2196f3;*/
+        /*        box-shadow: 0 0 0 10px, 10px -10px 0 10px, 32px 0 0 20px, 0 32px 0 20px, -5px 5px 0 10px, 20px -12px 0 11px;*/
+    }
+
+    thead input[type=checkbox]:checked + .checkbox-material .check,
+    label.checkbox-inline input[type=checkbox]:checked + .checkbox-material .check {
+        color: white;
+        border-color: #2196f3;
+        /*        background-color: #2196f3;*/
+    }
+
+    tbody input[type=checkbox]:before {
+        display: block;
+        position: absolute;
+        top: -5px;
+        left: 0;
+        content: "";
+        background-color: rgba(0,0,0,.84);
+        height: 20px;
+        width: 20px;
+        border-radius: 100%;
+        z-index: 1;
+        opacity: 0;
+        margin: 0;
+        transform: scale3d(2.3,2.3,1);
+    }
+
+    tbody input[type=checkbox] {
+        margin: 0 auto;
+        display: table;
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
+        border: 2px solid rgba(165,181,203,.53);
+        border-radius: 2px;
+        z-index: 1;
+        font-size: 13px;
+        line-height: 1.42857;
+        color: #758396 !important;
+        font-weight: 600;
+    }
+</style>
+
+<div id="content" class="container-fluid" style="display: none">
+    <div class="content-body">
+        <div class="card p-t-40">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <div class="text-center">
+                            <label style="text-align:left">Select Role </label>
+                            @Html.DropDownListFor(e => e.rolePermission.RoleID, Model.RolesList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_roles", @class = "select2-container--material", @style = "width: 25%" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="display:none" id="div_content">
+                    <div class="row">
+                        <div class="card-body">
+                            <table id="tbl_masters" class="table table-striped  dt-responsive" cellspacing="0" style=" width: 100%;">
+                                <thead>
+                                    <tr data-uid="123">
+                                        <th colspan="2">
+                                            Menu
+                                        </th>
+                                        <th colspan="1">
+                                            <div class="input-group">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="chk_read" /> @Html.DisplayNameFor(e => e.rolePermission.Read)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th colspan="1">
+                                            <div class="input-group">
+                                                <div class="checkbox">
+                                                    <label style="text-align:center!important">
+                                                        <input type="checkbox" id="chk_write" /> @Html.DisplayNameFor(e => e.rolePermission.Write)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th colspan="2">
+                                            <div class="input-group">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="chk_exportcsv" /> @Html.DisplayNameFor(e => e.rolePermission.ExportCSV)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th colspan="2">
+                                            <div class="input-group">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="chk_exportexcel" />  @Html.DisplayNameFor(e => e.rolePermission.ExportExcel)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th colspan="2">
+                                            <div class="input-group">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="chk_exportpdf" /> @Html.DisplayNameFor(e => e.rolePermission.ExportPDF)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th colspan="2">
+                                            <div class="input-group">
+                                                <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" id="chk_settings" /> @Html.DisplayNameFor(e => e.rolePermission.Settings)
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    @if (Model.CurrentMenuPermission.Write)
+                    {
+                        <text>
+                            <div class="row">
+                                <div class="text-center" style="margin:10px;">
+                                    <button id="btn_save" class="btn btn-success">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </text>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+
+        var len = 0;
+        $(document).ready(function () {
+            $(".chart-loader").attr("style", "display:none");
+            $("#content").attr("style", "display:block");
+            len = $("#content").find("tbody tr").length;
+            $("input:checkbox").attr("disabled","disabled");
+        });
+
+        //  Fetch the Summary respective from RoleID
+        $("#ddl_roles").change(function () {
+            if ($(this).val() != '' && $(this).val != 0 && $(this).val() != null) {
+                $(".chart-loader").attr("style", "display:block");
+                MenuPermissionSummary($(this).val());
+            }
+        });
+
+        //  Read Permission Checkbox
+        $("#chk_read").click(function () {
+            if ($(this).prop("checked") == true) {
+                $(this).closest("tr").find("input:checkbox").removeAttr("Disabled");
+                $(this).closest("table").find("tbody input:checkbox").removeAttr("Disabled");
+                $(".chk_read").prop("checked", true);
+            }
+            else if ($(this).prop("checked") == false) {
+                $(this).closest("tr").find("input:checkbox").attr("Disabled", "Disabled");
+                $(this).closest("table").find("tbody input:checkbox").attr("Disabled", "Disabled");
+                $(this).removeAttr("Disabled");
+                $(".chk_read").removeAttr("Disabled");
+                $(".chk_read").prop("checked", false);
+            }
+        })
+
+        $(document).on("click", ".chk_read", function () {
+            if ($(this).prop("checked") == true) {
+                $(this).closest("tr").find("input:checkbox").removeAttr("Disabled");
+            }
+            else if ($(this).prop("checked") == false) {
+                $(this).closest("tr").find("input:checkbox").attr("Disabled", "Disabled");
+                $(this).removeAttr("Disabled");
+            }
+            if ($('input:checkbox.chk_read:checked').length == len) {
+                $("#chk_read").prop("checked", true);
+            }
+            else {
+                $("#chk_read").prop("checked", false);
+            }
+        });
+
+        //  Write Permisson Checkbox
+        $("#chk_write").click(function () {
+            if ($(this).prop("checked") == true) {
+                $(".chk_write").prop("checked", true);
+            }
+            else if ($(this).prop("checked") == false) {
+                $(".chk_write").prop("checked", false);
+            }
+        })
+
+        $(document).on("click", ".chk_write", function () {
+            if ($('input:checkbox.chk_write:checked').length == len) {
+                $("#chk_write").prop("checked", true);
+            }
+            else {
+                $("#chk_write").prop("checked", false);
+            }
+        });
+
+        //Export to Excel permisson checkbox
+        $("#chk_exportexcel").click(function () {
+            if ($(this).prop("checked") == true) {
+                $(".chk_exportexcel").prop("checked", true);
+            }
+            else if ($(this).prop("checked") == false) {
+                $(".chk_exportexcel").prop("checked", false);
+            }
+        })
+
+        $(document).on("click",".chk_exportexcel",function () {
+            if ($('input:checkbox.chk_exportexcel:checked').length == len) {
+                $("#chk_exportexcel").prop("checked", true);
+            }
+            else {
+                $("#chk_exportexcel").prop("checked", false);
+            }
+        });
+
+        //Export to PDF permission Checkbox
+        $("#chk_exportpdf").click(function () {
+            if ($(this).prop("checked") == true) {
+                $(".chk_exportpdf").prop("checked", true);
+            }
+            else if ($(this).prop("checked") == false) {
+                $(".chk_exportpdf").prop("checked", false);
+            }
+        })
+
+        $(document).on("click",".chk_exportpdf",function () {
+            if ($('input:checkbox.chk_exportpdf:checked').length == len) {
+                $("#chk_exportpdf").prop("checked", true);
+            }
+            else {
+                $("#chk_exportpdf").prop("checked", false);
+            }
+        });
+
+        // Export to CSV permission checkbox
+        $("#chk_exportcsv").click(function () {
+            if ($(this).prop("checked") == true) {
+                $(".chk_exportcsv").prop("checked", true);
+            }
+            else if ($(this).prop("checked") == false) {
+                $(".chk_exportcsv").prop("checked", false);
+            }
+        })
+
+        $(document).on("click",".chk_exportcsv",function () {
+            if ($('input:checkbox.chk_exportcsv:checked').length == len) {
+                $("#chk_exportcsv").prop("checked", true);
+            }
+            else {
+                $("#chk_exportcsv").prop("checked", false);
+            }
+        });
+
+        //  Settings Permission Checkbox
+        $("#chk_settings").click(function () {
+            if ($(this).prop("checked") == true) {
+                $(".chk_settings").prop("checked", true);
+            }
+            else if ($(this).prop("checked") == false) {
+                $(".chk_settings").prop("checked", false);
+            }
+        })
+
+        $(document).on("click",".chk_settings",function () {
+            if ($('input:checkbox.chk_settings:checked').length == len) {
+                $("#chk_settings").prop("checked", true);
+            }
+            else {
+                $("#chk_settings").prop("checked", false);
+            }
+        });
+
+        $("#btn_save").click(function () {
+            var rows = $('tbody').find('tr');
+            var data = { model: [] }
+            $.each(rows, function () {
+                if ($(this).find("td:eq(1) .chk_read ").is(':checked')) {
+                    var json = {};
+                    json["RoleID"] = $("#ddl_roles").val();
+                    json["MenuID"] = $(this).find("td:eq(0) .hdn-menu-id").val();
+                    json["MenuName"] = $(this).find("td:eq(0)").text();
+                    json["ReadAccess"] = $(this).find("td:eq(1) .chk_read ").is(':checked');
+                    json["WriteAccess"] = $(this).find("td:eq(2) .chk_write").is(':checked');
+                    json["ExportCSV"] = $(this).find("td:eq(3) .chk_exportcsv").is(':checked');
+                    json["ExportExcel"] = $(this).find("td:eq(4) .chk_exportexcel ").is(':checked');
+                    json["ExportPDF"] = $(this).find("td:eq(5) .chk_exportpdf").is(':checked');
+                    json["SettingsAccess"] = $(this).find("td:eq(6) .chk_settings").is(':checked');
+                    data.model.push(json);
+                }
+            });
+            if (data.model.length>0) {
+                console.log(data);
+                postAjax("/MenuPermission/AddPermission", data, function (result) {
+                    if (result.status=="S") {
+                        window.localStorage.setItem("Message", result.message);
+                        window.location.href = "@Url.Action("Index","Home")"
+                    }
+                    else {
+                        show_notification(result.message);
+                    }
+                }, function () {
+                    show_notification("Something went wrong");
+                });
+            }
+            else {
+                show_notification("No permission to make changes.");
+            }
+        });
+
+        function MenuPermissionSummary(roleID) {
+            getAjax("@Url.Action("MenuPermissionSummary")", { RoleID: roleID }, function (response) {
+                if (response.status == "S") {
+                    console.log(response.data)
+                    $("#tbl_masters tbody").empty().append(response.data);
+                    $("input:checkbox").attr("disabled", "disabled");
+                    $("input:checkbox.chk_read").removeAttr("disabled");
+                    $("input:checkbox#chk_read").removeAttr("disabled");
+                    IsAllcheck();
+                    $(".chart-loader").attr("style", "display:none");
+                    $("#div_content").show();
+                    @if (!Model.CurrentMenuPermission.Write)
+                     {
+                        <text>
+                            $("input:checkbox").attr("disabled", "disabled");
+                        </text>
+                     }
+
+                } else {
+                    show_notification(response.message);
+                }
+            }, function (response) {
+                    show_notification("Something went wrong");
+            })
+        }
+
+        function IsAllcheck() {
+            len = $("#content").find("tbody tr").length;
+            if ($('input:checkbox.chk_read:checked').length == len) {
+                $("#chk_read").prop("checked", true);
+                $("#chk_read").closest("tr").find("input:checkbox").removeAttr("Disabled");
+                $(".chk_read").closest("table").find("tbody input:checkbox").removeAttr("Disabled");
+            }
+            else {
+                $("#chk_read").prop("checked", false);
+            }
+
+            if ($('input:checkbox.chk_write:checked').length == len) {
+                $("#chk_write").prop("checked", true);
+            }
+            else {
+                $("#chk_write").prop("checked", false);
+            }
+            if ($('input:checkbox.chk_exportexcel:checked').length == len) {
+                $("#chk_exportexcel").prop("checked", true);
+            }
+            else {
+                $("#chk_exportexcel").prop("checked", false);
+            }
+            if ($('input:checkbox.chk_exportpdf:checked').length == len) {
+                $("#chk_exportpdf").prop("checked", true);
+            }
+            else {
+                $("#chk_exportpdf").prop("checked", false);
+            }
+            if ($('input:checkbox.chk_exportcsv:checked').length == len) {
+                $("#chk_exportcsv").prop("checked", true);
+            }
+            else {
+                $("#chk_exportcsv").prop("checked", false);
+            }
+            if ($('input:checkbox.chk_settings:checked').length == len) {
+                $("#chk_settings").prop("checked", true);
+            }
+            else {
+                $("#chk_settings").prop("checked", false)
+            }
+
+
+            $('input[type=checkbox].chk_read').each(function () {
+                if ($(this).prop("checked") == true) {
+                    $(this).closest("tr").find("input:checkbox").removeAttr("Disabled");
+                }
+                else if ($(this).prop("checked") == false) {
+                    $(this).closest("tr").find("input:checkbox").attr("Disabled", "Disabled");
+                    $(this).removeAttr("Disabled");
+                }
+            })
+
+
+
+        }
+
+    </script>
+}

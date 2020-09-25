@@ -1,0 +1,194 @@
+﻿@model ZOI.BAL.ViewModels.HolidayViewModel
+@using ZOI.BAL.Utilites
+
+@{
+    if (Model.holyday.ID != 0)
+    {
+        ViewData["Title"] = "Update Holiday";
+    }
+    else
+    {
+        ViewData["Title"] = "Add Holiday";
+    }
+
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+
+
+    <form>
+        <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+            <div class="content-body">
+                <div class="card p-t-20">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                            <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                                @Html.HiddenFor(e => e.holyday.ID, htmlAttributes: new { @class = "form-control", @id = "hdn_id" })
+                                @Html.DisplayNameFor(e => e.holyday.HolidayDate)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.holyday.ID != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.holyday.HolidayDate, htmlAttributes: new { @class = "date form-control", @id = "txt-HolidayDt", @readonly = "true" })
+
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.holyday.HolidayDate, htmlAttributes: new { @class = "date form-control", @id = "txt-HolidayDt" })
+                                }
+
+                                <span class="text-holiday" style="color:red"></span>
+                                @Html.ValidationMessageFor(e => e.holyday.ID, "", new { @class = "field-validation-error" })
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.holyday.Holiday)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.holyday.Holiday, htmlAttributes: new { @class = "form-control", @id = "txt-HolidayDt", @onkeypress = "AlphaNumericWithSpaceWithHypen(event)" })
+                                    @Html.ValidationMessageFor(e => e.holyday.Holiday, "", new { @class = "field-validation-error" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        <label style="font-size:16px !important">
+                                            @Html.DisplayNameFor(e => e.holyday.IsSettlementHoliday)
+                                            @Html.CheckBoxFor(e => e.holyday.IsSettlementHoliday, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        <label style="font-size:16px !important">
+                                            @Html.DisplayNameFor(e => e.holyday.IsTradingHoliday)
+                                            @Html.CheckBoxFor(e => e.holyday.IsTradingHoliday, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        <label style="font-size:16px ">
+                                            @Html.LabelFor(e => e.holyday.IsActive, "Is Active")
+                                            @Html.CheckBoxFor(e => e.holyday.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="text-center" style="margin:10px;">
+                                @if (Model.holyday.ID != 0)
+                                {<button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                        Update
+                                    </button>
+                                }
+                                else
+                                { <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                        Add
+                                    </button>
+                                    <button type="button" class="btn btn-warning" id="btn_reset">
+                                        Reset
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+@section scripts{
+    <script src="~/EventManagement/js/utility.js"></script>
+    <script>
+         var valid = true;
+        $(document).ready(function () {
+        $(".chart-loader").attr("style", "display:none");
+
+        $("#div_form").show();
+
+
+        $("#btn_reset").click(function () {
+            $("#div_form").trigger("reset");
+        });
+
+        $("#txt-HolidayDt").on("change", function () {
+                getAjax("@Url.Action("IsExstis")", { name: $("#txt-HolidayDt").val(), ID: $("#hdn_id").val()}, function (result) {
+                switch (result.status) {
+                    case "F":
+                        $(".text-holiday").empty().text("The Holiday already exsits.");
+                        $(".text-holiday").show();
+                        valid = false;
+                        break;
+                    case "S":
+                        $(".text-holiday").hide();
+                        valid = true;
+                        break;
+                    default:
+                }
+            }, function (request, error) {
+                alert(" Can't do because: " + error);
+            })
+        });
+        });
+
+        $(function () {
+
+            $('datetimepicker1').datepicker({
+                startDate: '-3d'
+            });
+        });
+
+          function SaveData() {
+                if ($("form").valid() && valid) {
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+
+                    var object = $("form").serializeArray();
+                    var json = {};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    getAjax("@Url.Action("AddUpdate")", json,
+                        function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $("#notification").empty().text(result.message);
+                            $("#notification_modal").modal("show").on(alignModal);
+                            setTimeout(function () {
+                                $('#notification_modal').slideUp("slow").modal("hide");
+                            }, 3000);
+                            Message = null;
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                            break;
+                        case "S":
+                            window.localStorage.setItem("Message", result.message);
+                            window.location.href = "@Url.Action("SummaryView")"
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                            alert(" Can't do because: " + error);
+                    })
+                }
+        }
+
+    $('.date').datepicker({
+       format: 'd-M-yyyy'
+     });
+        function alignModal() {
+            var modalDialog = $(this).find(".modal-dialog");
+            modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+        }
+    </script>
+    <Partial name="_ValidationScriptsPartial.cshtml" />
+}

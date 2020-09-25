@@ -1,0 +1,137 @@
+@model BrowserUsageViewModel
+@{
+    ViewData["Title"] = "Browsing Data";
+}
+
+<style>
+    .dataTables_length {
+        width: 200px;
+        position: absolute;
+        margin-top: 0.5em;
+        margin-left: 0px !important;
+    }
+</style>
+<h1 class="page-title">Browser Usage List</h1>
+<div class="filterBox">
+    <a href="@Url.Action("Index","Home")" class="backbtn" style="padding-right: 10px;
+">Back </a>
+</div>
+<div class="clearfix"></div>
+<div class="divLine"></div>
+@*<div class="content-body">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="page-title">Browser Usage</h1>
+            </div>
+        </div>
+    </div>*@
+@*<div id="content" class="container-fluid">*@
+<br />
+<div class="content-body">
+    <div class="card">
+        <div class="card-body">
+            <div class="card-body">
+                <div class="row">
+                    @Html.Hidden("hdn_val_index", null, new { @id = "hdn_val_index" })
+                    <div class="card-body">
+                        @*<table class="table table-striped table-bordered dt-responsive" id="tbl_browsing_data"></table>*@
+                        <table id="tbl_browsing_data">
+                            <thead>
+                                <tr>
+                                    <th>URL</th>
+                                    <th>Total Seconds</th>
+                                    <th>Application Category</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*</div>*@
+@section Scripts{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#hdn_val_index").val(1);
+            BindDataTable();
+        });
+
+        function BindDataTable() {
+            $("#tbl_browsing_data").DataTable({
+                processing: true,
+                serverSide: true,
+                destroy: true,
+                pageLength: "10",
+                language: {
+                    search: '<h6>search<h6>',
+                },
+                "sAjaxSource": "@Url.Action("GetBrowserUsages", "BrowserListing")?pageIndex=1",
+                columns: [
+                    { "title": 'Url', "mData": "url", "sName": 'url' },
+                    { "title": 'Total Seconds', "mData": "totalSeconds", "sName": 'totalSeconds' },
+                    { "title": 'Application Category', "mData": "applicationCategory", "sName": 'applicationCategory' },
+                ]
+            });
+        }
+        $(document).on("click", ".paginate_button", function () {
+            page_idx = $(this).html();
+            page_size = $("#tbl_browsing_data").DataTable().page.len();
+           // if($(this).is())
+            if ($(this).is(':first-child') && $("#hdn_val_index").val() == 1) {
+                $(".previous").prop("class", "paginate_button previous disabled");
+            }
+            else if ($("#hdn_val_index").val() > 1 || $(this).html() == "Previous" || $(this).html() == "Next") {
+                if ($(this).html() == "Previous") {
+                    if ($(this).attr("data-dt-idx") == 0) {
+                        page_idx = parseInt($("#hdn_val_index").val()) - 1;
+                        $(".current").prev().prop("class", "paginate_button current");
+                        $(".current").next().prop("class", "paginate_button");
+                    }
+                    $("#hdn_val_index").val(page_idx);
+                    getBrowserUsage(page_idx, page_size);
+                }
+                if ($(this).html() == "Next") {
+                    var current = parseInt($("#hdn_val_index").val()) + 1;
+                    var current_rec = $(this).attr("data-dt-idx");
+                    if (current_rec == current) {
+                        if (parseInt(current) + 1 == parseInt($(".next").attr("data-dt-idx"))) {
+                            $(".next").prop("class", "paginate_button next disabled");
+                        }
+                    }
+                    else if ($(this).is(':last-child')) {
+                        page_idx = parseInt($("#hdn_val_index").val()) + 1;
+                        $(".current").next().prop("class", "paginate_button current");
+                        $(".current").prev().prop("class", "paginate_button");
+                        $("#hdn_val_index").val(page_idx);
+                        getBrowserUsage(page_idx, page_size);
+                    }
+                }
+                else {
+                   // $(".current").prev().prop("class", "paginate_button current")
+                    //
+                   // $(".current").removeClass("current");
+                    getBrowserUsage(page_idx, page_size);
+                    $("#hdn_val_index").val(page_idx);
+                }
+            }
+            else {
+                getBrowserUsage(page_idx, page_size);
+                $("#hdn_val_index").val(page_idx);
+            }
+        });
+
+        function getBrowserUsage(page_index, page_size) {
+            postAjax("@Url.Action("GetBrowserUsageData")", { pageIndex: page_index, pageSize:page_size}, function (response, ct) {
+                $("#tbl_browsing_data").find("tbody").empty();
+                $.each(response.data, function (index, item) {
+                    $("#tbl_browsing_data").find("tbody").append("<tr><td>" + item.url + "</td><td>" + item.totalSeconds + "</td><td>" + item.applicationCategory + "</td></tr>");
+                });
+            });
+        }
+    </script>
+}
+
+
+

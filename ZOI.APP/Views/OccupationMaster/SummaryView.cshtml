@@ -1,0 +1,181 @@
+﻿@model ZOI.BAL.ViewModels.OccupationViewModel
+@{
+
+    ViewData["Title"] = "Occupation Summary";
+    @if (Model.CurrentMenuPermission.Write)
+    {
+        ViewData["ActionTitle"] = "Add Event";
+        ViewData["ActionIcon"] = "zmdi-plus";
+        ViewData["ActionId"] = "btn_add";
+        ViewData["URL"] = Url.Action("Index");
+    }
+
+}
+
+<div id="content" class="container-fluid" style="display: none">
+    <div class="content-body">
+        <div class="card p-t-40">
+            <div class="card-body">
+                <div class="row">
+                    @if (Model.CurrentMenuPermission.ExportCSV || Model.CurrentMenuPermission.ExportExcel || Model.CurrentMenuPermission.ExportPDF)
+                    {
+                        <text>
+                            <div class="dropdown col-3 pull-right">
+                                <button type="button" class="btn btn-fab btn-fab-sm btn-success btn-flat dropdown-toggle" data-toggle="dropdown" data-placement="right" title="Action">
+                                    <i class="fa fa-download" aria-hidden="true"></i>
+                                </button>
+                                <ul class="dropdown-menu btn-primary dropdown-menu-left">
+                                    @if (Model.CurrentMenuPermission.ExportCSV)
+                                    {
+                                        <text>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=2">
+                                                <i class="fa fa-download"></i>  Export CSV
+                                            </a>
+                                        </li>
+                        </text>
+                    }
+                                    @if (Model.CurrentMenuPermission.ExportExcel)
+                                    {
+                                        <text>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=1">
+                                                    <i class="fa fa-download"></i>  Export Excel
+                                                </a>
+                                            </li>
+                                        </text>
+                                    }
+                                    @if (Model.CurrentMenuPermission.ExportPDF)
+                                    {
+                                        <text>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.Action("ExportData")?exportType=1">
+                                                    <i class="fa fa-download"></i>  Export PDF
+                                                </a>
+                                            </li>
+                                        </text>
+                                    }
+                                </ul>
+                            </div>
+                            </text>
+                        }
+                </div>
+                <div class="row">
+                    <div class="card-body">
+                        <table id="tbl_occupation_masters" class="table table-striped  dt-responsive" cellspacing="0" style="width: 100%;">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            var Message = window.localStorage.getItem("Message");
+            localStorage.removeItem("Message");
+
+            if (Message != null) {
+                show_notification(Message);
+            } else {
+                $("#notification_modal").hide();
+            }
+            DataTable();
+        });
+            //Fill the datatable by using the ajax call.
+        function DataTable() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("Summary")",
+                data: {},
+                success: function (result) {
+                    console.log(result);
+                    if (result.status="S") {
+                        $("#tbl_occupation_masters").dataTable({
+                            processing: true,
+                            data: result.data,
+                            order: [],
+                            columns: [
+                                 @if (Model.CurrentMenuPermission.Write)
+{
+<text>
+                                {
+                                    "data": "occupation", "orderable": false,
+                                    "render": function (data, type, row) {
+                                        var status_text = "",
+                                            status = true;
+                                        switch (row.isActiveText) {
+                                            case "Active":
+                                                status_text = "<i class='zmdi zmdi-eye-off' ></i> Deactivate";
+                                                status = false;
+                                                break;
+                                            case "InActive":
+                                                status_text = "<i class='zmdi zmdi-eye' ></i> Activate";
+                                                status = true;
+                                                break;
+                                            default:
+                                        }
+                                        return `<div class="dropdown">
+                                                       <button type="button" class="btn btn-fab btn-fab-sm btn-success btn-flat dropdown-toggle" data-toggle="dropdown" data-placement="right" title="Action">
+                                                            <i class="fa fa-ellipsis-v"></i>
+                                                       </button>
+                                                        <ul class="dropdown-menu btn-primary dropdown-menu-left">
+                                                            <li><a class="dropdown-item" href="@Url.Action("Update")?ID=` + row.id + `">
+                                                                <i class="fa fa-pencil-square-o"></i>  Edit </a>
+                                                            </li>
+                                                            <li><a class="dropdown-item" onclick="OpenModel(` + row.id +`,`+status +`)" style="cursor:pointer;">`+ status_text+`</a>
+                                                            </li>
+                                                        </ul>
+                                                </div>`;
+                                    }
+                                },
+</text>
+}
+                                { 'data': "occupation", 'title':"Occupation" },
+                                { 'data': "isActiveText", 'title': "Status" },
+                                { "data": "lastUpdatedDate", 'title': "Last Updated"},
+                            ]
+                        })
+                    }
+                    $(".chart-loader").attr("style", "display:none");
+                    $("#content").attr("style", "display:block");
+                },
+                error: function (request, error) {
+                    console.log(request);
+                    alert(" Can't do because: " + error);
+                }
+            });
+        }
+
+        function OpenModel(id, status) {
+            $("#btn_deactivate").attr("onclick", "Deactive(" + id + "," + status + ")");
+            $('#exampleModalLong').modal("show");
+
+        }
+
+        //  Change the status.
+        function Deactive(id, status) {
+            getAjax("@Url.Action("ChangeStatus")", { ID: id,Status:status},
+                function (result) {
+                    if (result.status = "S") {
+                        window.localStorage.setItem("Message", result.message );
+                        location.reload();
+                    } else {
+                        $("#notification").text("Something went Wrong");
+                        $("#notification").show();
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                });
+
+        }
+
+    </script>
+
+}
+
+
+

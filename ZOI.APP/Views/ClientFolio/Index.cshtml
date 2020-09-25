@@ -1,0 +1,316 @@
+﻿@model ZOI.BAL.ViewModels.ClientFolioViewModel
+@using ZOI.BAL.Utilites
+@{
+    if (Model.clientFolio.Id == 0)
+    {
+        ViewData["Title"] = "Add CLient Folio";
+    }
+    else
+    {
+        ViewData["Title"] = "Update CLient Folio";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.ClientID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.clientFolio.Id != 0)
+                                {
+
+                                    @Html.DropDownListFor(e => e.clientFolio.ClientID, Model.CLientList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%", @disabled = true })
+
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(e => e.clientFolio.ClientID, Model.CLientList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%", @id = "ddl_client" })
+                                }
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFolio.ClientID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.FolioNo)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.clientFolio.Id != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.clientFolio.FolioNo, htmlAttributes: new { @class = "form-control", @readonly = true })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.clientFolio.FolioNo, htmlAttributes: new { @class = "form-control", @id = "txt_foliono" })
+                                }
+                                <span class="field-validation-error" id="span_foliono"></span>
+                                @Html.ValidationMessageFor(e => e.clientFolio.FolioNo)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.PAN)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.clientFolio.PAN, htmlAttributes: new { @class = "form-control", @id = "txt_pan" })
+                                @Html.ValidationMessageFor(e => e.clientFolio.PAN)
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.InvestorName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.clientFolio.Id != 0)
+                                {
+                                    @Html.TextBoxFor(e => e.clientFolio.InvestorName, htmlAttributes: new { @class = "form-control", @readonly = true })
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(e => e.clientFolio.InvestorName, htmlAttributes: new { @class = "form-control", @id = "txt_name" })
+                                }
+                                @Html.HiddenFor(e => e.clientFolio.Id)
+                                @Html.ValidationMessageFor(e => e.clientFolio.InvestorName)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.AMCID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.clientFolio.Id != 0)
+                                {
+                                    @Html.DropDownListFor(e => e.clientFolio.AMCID, Model.AMCList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%", @disabled = true })
+
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(e => e.clientFolio.AMCID, Model.AMCList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @id = "ddl_amc", @style = "width: 100%" })
+                                }
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFolio.AMCID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.SchemeID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.clientFolio.Id != 0)
+                                {
+                                    @Html.DropDownListFor(e => e.clientFolio.SchemeID, Model.SchemaList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%", @disabled = true })
+
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(e => e.clientFolio.SchemeID, Model.SchemaList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @id = "ddl_schema", @style = "width: 100%" })
+                                }
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFolio.SchemeID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.AccountTypeID)<span style="color:red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.clientFolio.AccountTypeID, Model.SchemaList ?? new List<SelectListItem>(), Constants.Select, new { id = "ddl_l4_accouttype", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFolio.AccountTypeID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.AccountID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.clientFolio.AccountID, Model.SchemaList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_l5_accout", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.clientFolio.AccountID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.clientFolio.FolioDate)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.clientFolio.FolioDate, htmlAttributes: new { @class = "date form-control" })
+                                @Html.ValidationMessageFor(e => e.clientFolio.FolioDate)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-12 ">
+                            <div class="checkbox form-group is-empty">
+                                <label style="font-size:16px">
+                                    @Html.DisplayNameFor(e => e.clientFolio.IsActive)
+                                    @Html.CheckBoxFor(e => e.clientFolio.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+                            @if (Model.clientFolio.Id != 0)
+                            {
+                                <button type="button" onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" id="" onclick="Reset()">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+@section scripts{
+    <script>
+        var option = "<option value=''>--Select--</option>";
+        var valid_folionNo = true;
+        $(document).ready(function () {
+            $(".date").datepicker({
+                dateFormat: "dd M yy",
+                defaultDate: "+0D",
+                minDate: "+0D",
+                changeMonth: true,
+                changeYear: true
+            });
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_form").show();
+
+        });
+
+        $(document).ready(function () {
+            $(document).on('click', 'input', function () {
+                $(".field-validation-error").hide();
+            });
+        });
+
+        $("#ddl_rta").on("change",function () {
+            getAjax("@Url.Action("FillAMCList")", { ID: $("#ddl_rta").val() }, function (response) {
+                if (response.status = "S") {
+                    $("#ddl_schema").empty().append(option);
+                    $.each(response, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_amc").empty().append(option);
+                    option = "<option value=''>--Select--</option>"
+                }
+                else {
+                    $("#ddl_schema").empty().append(option);
+                    $("#ddl_amc").empty().append(option);
+                }
+            });
+        });
+
+
+        $("#ddl_amc").on("change",function () {
+            getAjax("@Url.Action("FillSchemaList")", { ID: $("#ddl_amc").val() }, function (response) {
+                if (response.status = "S") {
+                    $.each(response, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_schema").empty().append(option);
+                    option = "<option value=''>--Select--</option>"
+                } else {
+                    $("#ddl_schema").empty().append(option);
+                }
+            });
+        });
+
+
+
+        $("#ddl_client").on("change", function () {
+            var id = $(this).val();
+            getAjax("@Url.Action("FillInvestorDetail")", { ID: id}, function (response) {
+                if (response != null) {
+                    $("#txt_name").val(response.clientName)
+                    $("#txt_pan").val(response.pan)
+                } else {
+                }
+            });
+
+            getAjax("@Url.Action("FillAccountTypeList")", { ID: id }, function (response) {
+                if (response.status = "S") {
+                    $.each(response, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_l4_accouttype").empty().append(option);
+                    option = "<option value=''>--Select--</option>"
+                }
+                else {
+                    $("#ddl_l4_accouttype").empty().append(option);
+                }
+            });
+
+        });
+
+
+        $(document).on("change", "#ddl_l4_accouttype", function () {
+            getAjax("@Url.Action("FillAccountList")", { AccountTypeID : $(this).val(), ClientID : $("#ddl_client").val()}, function (response) {
+                if (response.status = "S") {
+                    $.each(response, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_l5_accout").empty().append(option);
+                    option = "<option value=''>--Select--</option>"
+                }
+                else {
+                    $("#ddl_l5_accout").empty().append(option);
+                }
+            });
+        });
+
+
+        $("#txt_foliono").on("change", function () {
+            getAjax("@Url.Action("IsExists")", { FolioNo: $("#txt_foliono").val(), SchemaID: $("#ddl_schema").val()}, function (response) {
+                if (response.status == "F") {
+                    $("#span_foliono").empty().text(response.message);
+                    valid_folionNo = false;
+
+                } else {
+                    valid_folionNo = true;
+                    $("#span_foliono").empty().hide();
+                }
+            });
+        });
+
+         //  Save the Data.
+        function SaveData() {
+            if ($("form").valid() && valid_folionNo )
+            {
+                $(".chart-loader").show();
+                $("#div_form").hide();
+                var object = $("form").serializeArray();
+                var json = {};
+                $.each(object, function () {
+                    if (json[this.name] == undefined) {
+                        json[this.name] = this.value;
+                    }
+                });
+                postAjax("@Url.Action("Index")", json,
+                    function (result) {
+                        console.log(result);
+                        if (result.status == "S") {
+                            window.localStorage.setItem("Message", result.message);
+                            window.location.href = "@Url.Action("SummaryView")";
+                        } else {
+                            show_notification(result.message);
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                        }
+                    },
+                    function (request) {
+                        show_notification("Somethimg went wrong");
+                    });
+            } else {
+                show_notification("Invalid Form Data");
+                $(".field-validation-error").show();
+            }
+        }
+    </script>
+}

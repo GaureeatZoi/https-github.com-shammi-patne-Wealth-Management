@@ -1,0 +1,209 @@
+﻿@model ZOI.BAL.Models.RTAs
+@{
+    ViewData["Title"] = "Add Update RTAs";
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+}
+
+<link href="~/Assets/css/Loader.css" rel="stylesheet" />
+
+@* Amar  Ramamoorthy *@
+<link href="~/Assets/css/theme-a.css" rel="stylesheet" />
+
+<style>
+
+    .btn-danger {
+        background-color: transparent !important;
+        color: #ef5350 !important;
+    }
+
+    .btn-info {
+        background-color: transparent !important;
+        color: #FFF !important;
+    }
+
+    .field-validation-error {
+        color: red;
+        position: absolute;
+        margin: -10px 0 0 !important;
+        font-size: smaller;
+    }
+</style>
+
+<!-- #region Loader -->
+<div class="text-center chart-loader">
+    <div class="loader1">
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+</div>
+
+<!-- #endregion -->
+
+
+
+<div class="modal fade" id="notification_modal" tabindex="-1" role="dialog" style="display:none" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body" id="notification_modal_body">
+                <div class="row">
+                    <div class="col-sm-1" style="margin-left:30px">
+                        <div class="leftside">
+                            <span style="margin:9px" class="zmdi zmdi zmdi-check-circle zmdi-hc-2x"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-9" style="margin-top: -8px;">
+                        <div class="rightside">
+                            <h2 id="notification"></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @* <button type="button" class="btn btn-info" data-dismiss="modal">No</button>*@
+                        <button type="button" data-dismiss="modal" class="btn btn-info btn-flat">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.Name)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.Name, htmlAttributes: new { @class = "form-control", @id = "txt_name",@onclick="AllowAlpha()" })
+                                @Html.ValidationMessageFor(e => e.Name)
+                                @Html.HiddenFor(e => e.Id, htmlAttributes: new { @class = "form-control", @id = "hdn_id" })
+                                <span class="txt_name field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12 ">
+                            <div class="form-group is-empty">
+
+                                @Html.DisplayNameFor(e => e.Address)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextAreaFor(e => e.Address, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(e => e.Address)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+
+                            @if (Model.Id != 0)
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" id="" onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" id="btn_reset">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+
+    <script src="~/Sapphire/js/utility.js"></script>
+    <script>
+        var valid = true;
+        $(document).ready(function () {
+            $(".chart-loader").attr("style", "display:none");
+            $("#div_form").show();
+
+
+            $("#btn_back").click(function () {
+                window.location.href = "@Url.Action("Index")"
+            });
+
+            $("#btn_reset").click(function () {
+                $("#div_form").trigger("reset");
+            });
+
+            $("#txt_name").on("change", function () {
+                getAjax("@Url.Action("IsExstis")", { name: $("#txt_name").val(), ID: $("#hdn_id").val() }, function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $(".txt_name").empty().text("The Name was already exsits.");
+                            $(".txt_name").show();
+                            valid = false;
+                            break;
+                        case "S":
+                            $(".txt_name").hide();
+                            valid = true;
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+        });
+        
+
+        function SaveData() {
+                if ($("form").valid() && valid) {
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+
+                    var object = $("form").serializeArray();
+                    var json = {};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    getAjax("@Url.Action("AddUpdate")", json,
+                        function (result) {
+                    switch (result.status) {
+                        case "F":
+                            $("#notification").empty().text(result.message);
+                            $("#notification_modal").modal("show").on(alignModal);
+                            setTimeout(function () {
+                                $('#notification_modal').slideUp("slow").modal("hide");
+                            }, 3000);
+                            Message = null;
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                            break;
+                        case "S":
+                            window.localStorage.setItem("Message", result.message);
+                            window.location.href = "@Url.Action("Index")"
+                            break;
+                        default:
+                    }
+                }, function (request, error) {
+                            alert(" Can't do because: " + error);
+                    })
+                }
+        }
+
+        function alignModal() {
+            var modalDialog = $(this).find(".modal-dialog");
+            modalDialog.css("margin-top", Math.max(0, ($(window).height() - modalDialog.height()) / 2));
+        }
+
+    </script>
+}

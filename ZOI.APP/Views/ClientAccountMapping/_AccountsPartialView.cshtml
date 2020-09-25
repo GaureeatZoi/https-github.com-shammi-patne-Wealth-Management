@@ -1,0 +1,107 @@
+﻿
+@using ZOI.BAL.Utilites-->
+
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+<!--<style>
+    .checkbox input[type=checkbox]:checked +
+    .checkbox-material .check:before, label.checkbox-inline input[type=checkbox]:checked + .checkbox-material .check:before {
+        color: #2196f3 !important;
+        /*        border-color: #2196f3;*/
+        /*        box-shadow: 0 0 0 10px, 10px -10px 0 10px, 32px 0 0 20px, 0 32px 0 20px, -5px 5px 0 10px, 20px -12px 0 11px;*/
+    }
+
+    input[type=checkbox]:checked + .checkbox-material .check,
+    label.checkbox-inline input[type=checkbox]:checked + .checkbox-material .check {
+        color: white;
+        border-color: #2196f3;
+        /*        background-color: #2196f3;*/
+    }
+
+    input[type=checkbox]:before {
+        display: block;
+        position: absolute;
+        top: -5px;
+        left: 0;
+        content: "";
+        background-color: rgba(0,0,0,.84);
+        height: 20px;
+        width: 20px;
+        border-radius: 100%;
+        z-index: 1;
+        opacity: 0;
+        margin: 0;
+        transform: scale3d(2.3,2.3,1);
+    }
+
+    input[type=checkbox] {
+        margin: 0 auto;
+        display: table;
+        height: 20px;
+        width: 20px;
+        cursor: pointer;
+        border: 2px solid rgba(165,181,203,.53);
+        border-radius: 2px;
+        z-index: 1;
+        font-size: 13px;
+        line-height: 1.42857;
+        color: #758396 !important;
+        font-weight: 600;
+    }
+</style>
+
+@if (Model.Flag > 0)
+{
+    <div class="row addmore-accounts" style="padding: 1em;">
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div class="form-group is-empty">
+                @Html.DisplayName("Account Type")<span style="color: red"><strong>&nbsp;*</strong></span>
+                @Html.DropDownList("Account Type", new SelectList(Model.AccountTypeList, "Value", "Text"), "--Select--"
+                    , new { @id = "ddl_accountType_" + Model.Flag, @class = "ddl-accounttype form-control select2-container--material", @style = "width: 100%" })
+                <br style="line-height:1em" />
+                <span id="span_accounttype_@Model.Flag" class="span-accounttype field-validation-error" style="margin-top: 0px !important; color: red"></span>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+            <div class="form-group is-empty">
+                @Html.DisplayName("UCC")<span style="color: red"><strong>&nbsp;*</strong></span>
+                @Html.TextBox("UCC", "", htmlAttributes: new { @maxlength = "10", @id = "txt_ucc_" + Model.Flag, @onkeypress = "AlphaNumeric(event)", @class = "txt-ucc form-control" })
+                @Html.Hidden("ID", Model.AccountsMapping.ID, htmlAttributes: new { @class = "hdn-accountdetails-id form-control" })
+                @Html.Hidden("Index", Model.Flag, htmlAttributes: new { @class = "hdn-index form-control" })
+                <span id="span_ucc_@Model.Flag" class="span-ucc field-validation-error" style="color: red"></span>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 ">
+            <div class="form-group is-empty">
+                <div class="checkbox">
+                    <label style="font-size:16px ">
+                        @Html.DisplayName("Default")
+                        <input type="checkbox" class="checkbox ckb-default" />
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 " style="margin-top: 4em;">
+            <div class="form-group is-empty" style="float:right">
+                <button type="button" class="btn btn-info btn-close">
+                    Remove Account
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $(".select2-container--material").select2({
+                theme: "material",
+            });
+        })
+
+    </script>
+
+}-->
+
+
+

@@ -1,0 +1,722 @@
+﻿@model ZOI.BAL.ViewModels.SchemeViewModel
+@using ZOI.BAL.Utilites
+
+@{
+    if (Model.schemeMaster.ID != 0)
+    {
+        ViewData["Title"] = "Update Scheme Master";
+    }
+    else
+    {
+        ViewData["Title"] = "Add Scheme Master";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["Url"] = Url.Action("SummaryView");
+}
+
+<style>
+
+    .select2-container--material .select2-selection--multiple .select2-selection__choice {
+        background: none !important;
+    }
+
+    .select2-selection__choice__remove {
+        height: 27px;
+        border: none;
+    }
+
+    button span {
+        font-size: 15px;
+    }
+
+    .section-head {
+        background-color: #F4F6F6;
+        border-radius: 0.5em;
+        color: #273746;
+        text-align: left;
+        text-decoration: double;
+        height: fit-content;
+        padding: 10px;
+    }
+
+    .section-body {
+        background-color: white;
+        margin-top: 10px;
+        color: #273746;
+        text-align: left;
+        text-decoration: double;
+        padding: 10px;
+    }
+
+    .section-content {
+        padding: 10px;
+        text-align: center;
+        background-color: white;
+        color: white;
+        margin-top: 40px;
+        margin-right: 10px;
+        padding: 15px;
+        margin-left: 10px;
+        margin-bottom: 40px;
+        border-radius: 0.5em;
+    }
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 32px;
+    }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    /* The slider */
+    .slider {
+        margin-top: 0px;
+        margin-bottom: -17px;
+        position: absolute;
+        cursor: pointer;
+        top: 15px;
+        left: 7px;
+        right: -5px;
+        bottom: 3px;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 20px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+  /*  .select2-choices {
+        display: -webkit-inline-box;
+        max-width: 250px;
+    }*/
+    .select2-selection__choice {
+        float: none !important;
+        display: inline-block !important;
+    }
+</style>
+
+<form id="div_form" style="display: none;margin-top: 40px;">
+    @*Scheme Details*@
+    <div id="div_scheme">
+        <div class="section-content wb">
+            <div class="section-head">
+                <h5>Scheme Details</h5>
+            </div>
+            <input type="hidden" name="@Model.schemeMaster.ID">
+            @Html.HiddenFor(e => e.schemeMaster.ID, htmlAttributes: new { @class = "form-control" })
+            <div class="section-body">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.SchemeName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.schemeMaster.SchemeName, htmlAttributes: new { @class = "form-control", @id = "txt_name", @onclick = "AllowAlphaNumeric()", @style = "margin-top: 6px;" })
+                                @Html.ValidationMessageFor(e => e.schemeMaster.SchemeName, "", new { @style = "margin-top: 0px !important;" })
+                                <span class="txt_name field-validation-error" style="color:red"></span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.SchemeTypeID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.schemeMaster.SchemeTypeID, Model.SchemeTypeList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_scheme_type", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.schemeMaster.SchemeTypeID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.SchemeCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.schemeMaster.SchemeCode, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlphaNumeric()", @style = "margin-top: 6px;" })
+                                @Html.ValidationMessageFor(e => e.schemeMaster.SchemeCode, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.RTAID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.schemeMaster.RTAID, Model.RtaList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_rta", @class = "form-control select2-container--material", @style = "width: 100%;" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.schemeMaster.RTAID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.RTAProdCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.schemeMaster.RTAProdCode, htmlAttributes: new { @class = "form-control", @id = "txt_rta_prod_code", @onclick = "AllowAlphaNumeric()", @style = "margin-top: 6px;" })
+                                @Html.ValidationMessageFor(e => e.schemeMaster.RTAProdCode, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.RTACode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.schemeMaster.RTACode, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlphaNumeric()", @style = "margin-top: 6px;" })
+                                @Html.ValidationMessageFor(e => e.schemeMaster.RTACode, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.AMCID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.schemeMaster.AMCID, Model.AmcList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_amc", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.schemeMaster.AMCID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.AssetClassId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.schemeMaster.AssetClassId, Model.AssetClassList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_asset_class", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.schemeMaster.AssetClassId, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.SubAssetClassId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.schemeMaster.SubAssetClassId, Model.SubAssetClassList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_sub_asset_class", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.schemeMaster.SubAssetClassId, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.ShortName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.schemeMaster.ShortName, htmlAttributes: new { @class = "form-control", @id = "txt_short_name", @onclick = "AllowAlphaNumeric()", @style = "margin-top: 6px;" })
+                                @Html.ValidationMessageFor(e => e.schemeMaster.ShortName, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.OldSchemeName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.schemeMaster.OldSchemeName, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlphaNumeric()", @style = "margin-top: 6px;" })
+                                @Html.ValidationMessageFor(e => e.schemeMaster.OldSchemeName, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.WEF)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.schemeMaster.WEF, htmlAttributes: new { @class = "form-control date", @id = "txt_wef", @style = "margin-top: 6px;" })
+                                @Html.ValidationMessageFor(e => e.schemeMaster.WEF, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.schemeMaster.PlanID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.DropDownListFor(e => e.schemeMaster.PlanID, Model.PlanList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_plan", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.schemeMaster.PlanID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Transaction Section*@
+    <div id="div_frequency">
+        <div class="section-content wb">
+            <div class="section-head">
+                <h5>Transaction Details</h5>
+            </div>
+            <div class="section-body">
+                <div>
+                    <div class="toggle-placement">
+                        @Html.DisplayNameFor(e => e.SchemeTransactionDetails.IsRecurring)
+                        <label class="switch">
+                            @Html.CheckBoxFor(e => e.SchemeTransactionDetails.IsRecurring, htmlAttributes: new { @class = "checkbox", id = "toggle_recurring", @checked = true })
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
+                    <div class="frequency" style="display: none;margin-bottom:50px;">
+                        <h3 style="text-align:center">Select Frequency</h3>
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(e => e.Frequency.Daily, htmlAttributes: new { @class = "checkbox" })@Html.DisplayNameFor(e => e.Frequency.Daily)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(e => e.Frequency.Weekly, htmlAttributes: new { @class = "checkbox" })@Html.DisplayNameFor(e => e.Frequency.Weekly)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(e => e.Frequency.Monthly, htmlAttributes: new { @class = "checkbox" })@Html.DisplayNameFor(e => e.Frequency.Monthly)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(e => e.Frequency.Quartely, htmlAttributes: new { @class = "checkbox" })@Html.DisplayNameFor(e => e.Frequency.Quartely)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(e => e.Frequency.HalfYearly, htmlAttributes: new { @class = "checkbox" })@Html.DisplayNameFor(e => e.Frequency.HalfYearly)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(e => e.Frequency.Yearly, htmlAttributes: new { @class = "checkbox" })@Html.DisplayNameFor(e => e.Frequency.Yearly)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-left:14px;">
+                        <div class="input-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(e => e.SchemeTransactionDetails.SIP, htmlAttributes: new { @class = "checkbox", @id = "cb_sip" })@Html.DisplayNameFor(e => e.SchemeTransactionDetails.SIP)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-left:14px;">
+                        <div class="input-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(e => e.SchemeTransactionDetails.STP, htmlAttributes: new { @class = "checkbox", @id = "cb_stp" })@Html.DisplayNameFor(e => e.SchemeTransactionDetails.STP)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12" style="padding-left:14px;">
+                        <div class="input-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(e => e.SchemeTransactionDetails.SWP, htmlAttributes: new { @class = "checkbox" })@Html.DisplayNameFor(e => e.SchemeTransactionDetails.SWP)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 sip-date" style="display: none;">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.SchemeTransactionDetails.SIPDate)
+                            @Html.TextBoxFor(e => e.SchemeTransactionDetails.SIPDate, htmlAttributes: new { @class = "form-control date", @id = "txt_sip_date", @style = "margin-top: 6px;" })
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 stp-date" style="display: none;">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.SchemeTransactionDetails.STPDate)
+                            @Html.TextBoxFor(e => e.SchemeTransactionDetails.STPDate, htmlAttributes: new { @class = "form-control date", @id = "txt_stp_date", @style = "margin-top: 6px;" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="input-group">
+                            <div class="checkbox" style="padding-left:20px;">
+                                <label>
+                                    @Html.CheckBoxFor(e => e.SchemeTransactionDetails.Demat, htmlAttributes: new { @class = "checkbox", @id = "cb_demat" })@Html.DisplayNameFor(e => e.SchemeTransactionDetails.Demat)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="input-group">
+                            <div class="checkbox" style="padding-left:15px;">
+                                <label>
+                                    @Html.CheckBoxFor(e => e.SchemeTransactionDetails.IncludedUnitsOfExDate, htmlAttributes: new { @class = "checkbox", @id = "cb_included_unitsOf_Date" })@Html.DisplayNameFor(e => e.SchemeTransactionDetails.IncludedUnitsOfExDate)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.SchemeTransactionDetails.RestrictedNationality)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.ListBoxFor(e => e.SchemeTransactionDetails.RestrictedNationality, Model.RestrictNationalityList ?? new List<SelectListItem>(), new { @id = "ddl_restricted_nationality", @class = "form-control select2-container--material multiple", @multiple = "multiple", @style = "width: 100%",@selected=true })
+                            <br style="line-height:1em" />
+                            @Html.ValidationMessageFor(e => e.SchemeTransactionDetails.RestrictedNationality, "", new { @style = "margin-top: 0px !important;" })
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.SchemeTransactionDetails.InvestorType)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.ListBoxFor(e => e.SchemeTransactionDetails.InvestorType, Model.InvestorTypeList ?? new List<SelectListItem>(), new { @id = "ddl_investor_type", @class = "form-control select2-container--material multiple",  @multiple = true , @style = "width: 100%"})
+                            <br style="line-height:1em" />
+                            @Html.ValidationMessageFor(e => e.SchemeTransactionDetails.InvestorType, "", new { @style = "margin-top: 0px !important;" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Minumum Holing Period Section*@
+    <div id="div_minimum_holding_peiod">
+        <div class="section-content wb">
+            <div class="section-head">
+                <h5>Minimum Holding Period</h5>
+            </div>
+            <div class="section-body">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.SchemeTransactionDetails.NoOfDays)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.DropDownListFor(e => e.SchemeTransactionDetails.NoOfDays, Model.NoOfDaysList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_no_of_days", @class = "form-control select2-container--material", @style = "width: 100%" })
+                            @Html.ValidationMessageFor(e => e.SchemeTransactionDetails.NoOfDays, "", new { @style = "margin-top: 0px !important;" })
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.SchemeTransactionDetails.NoOfMonths)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.DropDownListFor(e => e.SchemeTransactionDetails.NoOfMonths, Model.NoOfMonthsList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_no_of_months", @class = "form-control select2-container--material", @style = "width: 100%" })
+                            @Html.ValidationMessageFor(e => e.SchemeTransactionDetails.NoOfMonths, "", new { @style = "margin-top: 0px !important;" })
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.SchemeTransactionDetails.NoOfYears)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.DropDownListFor(e => e.SchemeTransactionDetails.NoOfYears, Model.NoOfYearsList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_no_of_years", @class = "form-control select2-container--material", @style = "width: 100%" })
+                            @Html.ValidationMessageFor(e => e.SchemeTransactionDetails.NoOfYears, "", new { @style = "margin-top: 0px !important;" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Registration Section*@
+    <div id="div_registration">
+        <div class="section-content wb">
+            <div class="section-head">
+                <h5>Registration Details</h5>
+            </div>
+            <div class="section-body">
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.AMFICode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.AMFICode, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlphaNumeric()", @style = "margin-top: 6px;" })
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.AMFICode)
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.MaturityDate)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.MaturityDate, htmlAttributes: new { @class = "form-control date", @id = "txt_maturity_date", @style = "margin-top: 6px;" })
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.MaturityDate)
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.NSESymbol)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.NSESymbol, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlphaNumeric()", @style = "margin-top: 6px;" })
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.NSESymbol)
+                        </div>
+                    </div>
+                    @*Series*@
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.SchemeOption)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.DropDownListFor(e => e.schemeRegistrationDetails.SchemeOption, Model.OptionTypeList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_option_type", @class = "form-control select2-container--material", @style = "width: 100%" })
+                            <br style="line-height:1em" />
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.SchemeOption, "", new { @style = "margin-top: 0px !important;" })
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.SeriesId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.DropDownListFor(e => e.schemeRegistrationDetails.SeriesId, Model.SeriesList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_series", @class = "form-control select2-container--material", @style = "width: 100%" })
+                            <br style="line-height:1em" />
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.SeriesId, "", new { @style = "margin-top: 0px !important;" })
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.BseCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.BseCode, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlphaNumeric()" })
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.BseCode)
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.ISIN)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.ISIN, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlphaNumeric()" })
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.ISIN)
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.RefISIN)
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.RefISIN, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlphaNumeric()" })
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.IssueOpenDate)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.IssueOpenDate, htmlAttributes: new { @class = "form-control date", @id = "txt_issue_open_date" })
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.IssueOpenDate)
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.CloseDate)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.CloseDate, htmlAttributes: new { @class = "form-control date", @id = "txt_close_date" })
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.CloseDate)
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                        <div class="form-group is-empty">
+                            @Html.DisplayNameFor(e => e.schemeRegistrationDetails.ReOpenDate)<span style="color: red"><strong>&nbsp;*</strong></span>
+                            @Html.TextBoxFor(e => e.schemeRegistrationDetails.ReOpenDate, htmlAttributes: new { @class = "form-control date", @id = "txt_reopen_date" })
+                            @Html.ValidationMessageFor(e => e.schemeRegistrationDetails.ReOpenDate)
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="input-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.DisplayNameFor(e => e.schemeMaster.IsActive)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.CheckBoxFor(e => e.schemeMaster.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="text-center" style="margin:10px;">
+                            @if (Model.schemeMaster.ID != 0)
+                            {
+                                <button type="button" id="btn" onclick="SaveData()" class="btn btn-success">
+                                    Update
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="button" id="btn" onclick="SaveData()" class="btn btn-success ">
+                                    Add
+                                </button>
+                                <button type="button" class="btn btn-warning" onclick="Reset()">
+                                    Reset
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+@section scripts{
+
+    <script type="text/javascript">
+        var valid = true;
+        $(document).ready(function () {
+            var date = new Date();
+            var startday = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            $(".multiple").select2({
+                theme: "material",
+                multiple: true,
+                allowClear: false
+            });
+            if ($("#cb_sip").prop("checked") == true) {
+                $(".sip-date").show();
+            }
+            if ($("#cb_stp").prop("checked") == true) {
+                $(".stp-date").show();
+            }
+
+        $(".chart-loader").attr("style", "display:none");
+            $("#div_form").show();
+
+        //$("#div_frequency").show();
+        //$("#div_registration").show();
+        //$("#div_minimum_holding_peiod").show();
+
+        if ($("#toggle_recurring").prop("checked") == true) {
+            $(".frequency").show();
+            }
+
+        $(".date").datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: "dd M yy",
+            startDate: startday
+        });
+
+    });
+        //Frequency
+        $(document).on('click', '#toggle_recurring', function () {
+            if ($("#toggle_recurring").prop("checked") == true) {
+                $(".frequency").show();
+            }
+            else {
+                $(".frequency").hide();
+            }
+        });
+
+         //SIP
+        $(document).on('click', '#cb_sip', function () {
+            if ($("#cb_sip").prop("checked") == true) {
+                $(".sip-date").show();
+            }
+            else {
+                $(".sip-date").hide();
+            }
+        });
+
+        //STP
+        $(document).on('click', '#cb_stp', function () {
+            if ($("#cb_stp").prop("checked") == true) {
+                $(".stp-date").show();
+            }
+            else {
+                $(".stp-date").hide();
+            }
+        });
+             // Check the duplicate value on change.
+            $("#txt_name").on("change", function () {
+                getAjax("@Url.Action("IsExstis")", { name: $("#txt_name").val(), ID: $("#hdn_id").val()}, function (result) {
+                    switch (result.status) {
+                        case "S":
+                            $(".txt_name").hide();
+                            valid = true;
+                            break;
+                        case "F":
+                            $(".txt_name").empty().text("The Scheme Name was already exsits...");
+                            $(".txt_name").show();
+                            valid = false;
+                            break;
+
+                        default:
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                })
+            });
+
+      //  Save the data.
+        function SaveData() {
+            // If the form is valid it goes to the next funcctionality.
+            if ($("form").valid() && valid) {
+                $("#div_form").hide();
+                $(".chart-loader").show();
+                    var object = $("form").serializeArray();
+                var json = {};
+                console.log(object);
+
+                $.each(object, function () {
+                    if (json[this.name] != undefined) {
+                        if (!json[this.name].push) {
+                            json[this.name] = [json[this.name]];
+                        }
+                        json[this.name].push(this.value)
+                    }
+                    else {
+                        json[this.name] = this.value;
+                    }
+                });
+                 postAjax("@Url.Action("AddUpdate")", json,
+                     function (result) {
+                         if (result.status == "S") {
+                             window.localStorage.setItem("Message", result.message);
+                            // show_notification(result.message);
+                             window.location.href = "@Url.Action("SummaryView")"
+                         }
+                         else {
+                             show_notification(result.message);
+                             $("#div_form").show();
+                             $(".chart-loader").hide();
+                         }
+                     },
+                     function (request, error) {
+                         show_notification("Something went wrong");
+                         $("#div_form").show();
+                         $(".chart-loader").hide();
+                     });
+                }
+        }
+    </script>
+}
+

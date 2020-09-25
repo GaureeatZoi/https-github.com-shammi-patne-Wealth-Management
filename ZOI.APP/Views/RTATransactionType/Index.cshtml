@@ -1,0 +1,189 @@
+﻿@model ZOI.BAL.ViewModels.RTATransactionTypeViewModel
+@using ZOI.BAL.Utilites
+@{
+    if (Model.RTATransactionTypes.ID != 0)
+    {
+        ViewData["Title"] = "Update RTA Transaction Types";
+    }
+    else
+    {
+        ViewData["Title"] = "Add RTA Transaction Types";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+    ViewData["ActionTitle1"] = "Add Transaction Type Mapping";
+    ViewData["ActionIcon1"] = "zmdi-code-setting";
+    ViewData["ActionId1"] = "btn_add";
+    ViewData["URL1"] = Url.Action("MapTransactionType");
+
+}
+<form>
+    <div id="div_form" class="container-fluid" style="display: none;margin-top: 40px;">
+        <div class="content-body">
+            <div class="card p-t-20">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.RTATransactionTypes.RTAId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.RTATransactionTypes.ID != 0)
+                                {
+                                    @Html.DropDownListFor(e => e.RTATransactionTypes.RTAId, Model.RTAList, Constants.Select, new { @id = "ddl_rta", @class = "form-control select2-container--material", @style = "width: 100%" , @disabled = true })
+
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(e => e.RTATransactionTypes.RTAId, Model.RTAList, Constants.Select, new { @id = "ddl_rta", @class = "form-control select2-container--material", @style = "width: 100%" })
+
+                                }
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.RTATransactionTypes.RTAId, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.RTATransactionTypes.TransactionTypeID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @if (Model.RTATransactionTypes.ID != 0)
+                                {
+                                    @Html.DropDownListFor(e => e.RTATransactionTypes.TransactionTypeID, Model.TransactionTypeList, Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%" , @disabled = true })
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(e => e.RTATransactionTypes.TransactionTypeID, Model.TransactionTypeList, Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%" })
+                                }
+                                <br style="line-height:1em" />
+                                @Html.ValidationMessageFor(e => e.RTATransactionTypes.TransactionTypeID, "", new { @style = "margin-top: 0px !important;" })
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.RTATransactionTypes.RTATransactionType)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.RTATransactionTypes.RTATransactionType, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlpha()", @id = "txt_rta_transaction_type" })
+                                @Html.ValidationMessageFor(e => e.RTATransactionTypes.RTATransactionType)
+                                @Html.HiddenFor(e => e.RTATransactionTypes.ID, htmlAttributes: new { @class = "form-control", @id = "hdn_id" })
+                                <span id="span_rta_transaction_type" class="field-validation-error">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="form-group is-empty">
+                                @Html.DisplayNameFor(e => e.RTATransactionTypes.Remarks)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                @Html.TextBoxFor(e => e.RTATransactionTypes.Remarks, htmlAttributes: new { @class = "form-control", @onclick = "AllowAlpha()", @id = "txt_name" })
+                                @Html.ValidationMessageFor(e => e.RTATransactionTypes.Remarks)
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <div class="input-group">
+                                <div class="checkbox">
+                                    @Html.DisplayNameFor(e => e.RTATransactionTypes.IsActive)
+                                    <label>
+                                        @Html.CheckBoxFor(e => e.RTATransactionTypes.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="text-center" style="margin:10px;">
+                            <input type="button" onclick="MapData()" class="btn btn-success" value="Map Transaction Type" />
+                            @if (Model.RTATransactionTypes.ID != 0)
+                            {
+                                <input type="button" onclick="SaveData()" class="btn btn-success" value="Update" />
+                            }
+                            else
+                            {
+                                <input type="button" onclick="SaveData()" class="btn btn-success" value="Add" />
+                                <input type="button" class="btn btn-warning" onclick="Reset()" value="Reset" />
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section scripts{
+    <script>
+
+        var valid = true;
+        $(document).ready(function () {
+            $(".chart-loader").hide();
+            $("#div_form").show();
+        });
+
+        $("#txt_rta_transaction_type").click(function () {
+            if ($("#ddl_rta").val() == "" || $("#ddl_rta").val() == null)
+            {
+                $("#span_rta_transaction_type").empty().text("Please select the RTA").show();
+            }
+            else {
+                $("#span_rta_transaction_type").empty().hide();
+            }
+        });
+
+        $("#ddl_rta").on("change", function () {
+            IsExsists();
+        });
+
+
+        function IsExsists() {
+            getAjax("@Url.Action("IsExists")", { RTAID: $("#ddl_rta").val(), RTAType: $("#txt_rta_transaction_type").val(), ID: $("#hdn_id").val()}, function (response) {
+                if (response.status == "F") {
+                    $("#span_rta_transaction_type").empty().text(response.message).show();
+                    valid = false;
+                } else {
+                    valid = true;
+                    $("#span_rta_transaction_type").empty().hide();
+                }
+            });
+        }
+
+        $("#txt_rta_transaction_type").on("change", function () {
+            IsExsists();
+        });
+
+      
+
+      //  Save the Data.
+        function SaveData() {
+            if ($("form").valid() && valid) {
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+                    var object = $("form").serializeArray();
+                    var json = {};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    postAjax("@Url.Action("Index")", json,
+                        function (result) {
+                            if (result.status=="S") {
+                                window.localStorage.setItem("Message", result.message);
+                                    window.location.href = "@Url.Action("SummaryView")"
+                            } else {
+                                show_notification(result.message);
+                                $(".chart-loader").hide();
+                                $("#div_form").show();
+                            }
+                            console.log(result);
+
+                        }, function (request) {
+                            show_notification("Somethimg went wrong");
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                        })
+                } else {
+                show_notification("Form was not valid please check the data.");
+                $('.field-validation-error').show();
+                }
+        }
+
+    </script>
+
+}
+
+

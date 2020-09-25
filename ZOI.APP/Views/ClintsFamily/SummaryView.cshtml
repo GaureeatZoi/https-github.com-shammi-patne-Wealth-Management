@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewData["Title"] = "Client Family Summary";
+    ViewData["ActionTitle"] = "Add Event";
+    ViewData["ActionIcon"] = "zmdi-plus";
+    ViewData["ActionId"] = "btn_add";
+    ViewData["URL"] = Url.Action("Index");
+}
+<div id="content" class="container-fluid" style="display: none">
+    <div class="content-body">
+        <div class="card p-t-40">
+            <div class="card-body">
+                <div class="row">
+                    <div class="card-body">
+                        <table id="tbl_client_family" class="table table-striped  dt-responsive" cellspacing="0" style="width: 100%;">
+
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Family Name</th>
+                                    <th>Family Short Name</th>
+                                    <th>Group</th>
+                                    <th>Address Line1</th>
+                                    <th>Address Line2</th>
+                                    <th>Country</th>
+                                    <th>State</th>
+                                    <th>City</th>
+                                    <th>Pincode</th>
+                                    <th>Longitude</th>
+                                    <th>Latitude</th>
+                                    @*<th>Is Active</th>*@
+                                    <th>Last Modified</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+
+    <script>
+        $(document).ready(function () {
+            var Message = window.localStorage.getItem("Message");
+            localStorage.removeItem("Message");
+            if (Message != null) {
+                show_notification(Message);
+            } else {
+                $("#notification_modal").hide();
+            }
+            loadDataTable();
+        });
+
+        //  Load the datatable
+        function loadDataTable() {
+             DataTable = $('#tbl_client_family').DataTable({
+                "ajax": {
+                     "url": "/ClientFamily/Summary",
+                    "type": "GET",
+                    "dataSrc": "",
+                    "datatype": "json"
+                },
+                "columns": [
+                    {
+                        "data": "id",
+                        "render": function (data, type, row) {
+
+                            return  '<div class="dropdown"><button type="button" class="btn btn-fab btn-fab-sm btn-success btn-flat dropdown-toggle" data-toggle="dropdown" data-placement="right" title="Action"><i class="fa fa-ellipsis-v"></i></button><ul class="dropdown-menu btn-primary dropdown-menu-left"><li><a class="dropdown-item" href="@Url.Action("UpdateClientFamily")?ID=' + row.id + '"><i class="fa fa-pencil-square-o"></i>  Edit</a></li><li><a class="dropdown-item" onclick="OpenModel(' + row.id +')" style="cursor:pointer;"><i class="fa fa-trash-o" ></i>  Deactivate</a></li></div>';
+
+
+                        }, "width": "5%"
+                    },
+                    { "data": "familyName", "width": "20%" },
+                    { "data": "familyShortName", "width": "20%" },
+                    { "data": "groups", "width": "20%" },
+                    { "data": "addressLine1", "width": "20%" },
+                    { "data": "addressLine2", "width": "20%" },
+                    { "data": "countries", "width": "20%" },
+                    { "data": "states", "width": "20%" },
+                    { "data": "cities", "width": "20%" },
+                    { "data": "pincode", "width": "20%" },
+                    { "data": "longitude", "width": "20%" },
+                    { "data": "latitude", "width": "15%" },
+                    { "data": "lastUpdatedDate", "width": "15%" },
+
+                ],
+                "language": {
+                    "emptyTable": "no data found"
+                },
+                "width": "100%"
+
+            });
+            $(".chart-loader").attr("style", "display:none");
+            $("#content").attr("style", "display:block");
+        }
+
+        //  Change the status.
+        function Deactive(id) {
+            getAjax("@Url.Action("Deactivate")", {ID:id},
+                function (result) {
+                    if (result.status = "S") {
+                        window.localStorage.setItem("Message", result.message );
+                        location.reload();
+                    } else {
+                        $("#notification").text("Something went Wrong");
+                        $("#notification").show();
+                    }
+                }, function (request, error) {
+                    alert(" Can't do because: " + error);
+                });
+
+        }
+
+    </script>
+
+}
+
+

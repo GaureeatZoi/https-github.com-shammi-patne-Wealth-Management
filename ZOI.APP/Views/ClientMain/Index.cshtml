@@ -1,0 +1,1238 @@
+﻿@model ZOI.BAL.ViewModels.ClientMainViewModel
+@using ZOI.BAL.Utilites
+@using ZOI.BAL.Models
+@{
+    if (Model.ClientDetails.ID != 0)
+    {
+        ViewData["Title"] = "Update Client";
+    }
+    else
+    {
+        ViewData["Title"] = "Add Client";
+    }
+    ViewData["ActionTitle"] = "Back";
+    ViewData["ActionIcon"] = "zmdi-arrow-back";
+    ViewData["ActionId"] = "btn_back";
+    ViewData["URL"] = Url.Action("SummaryView");
+}
+
+<style>
+
+   
+
+    .col-lg-4.col-md-4.col-sm-6.col-xs-12 {
+        padding: 0px 0.5em !important;
+    }
+
+    .section-head {
+        background-color: #F4F6F6;
+        border-radius: 0.5em;
+        color: #273746;
+        text-align: left;
+        text-decoration: double;
+        height: fit-content;
+        padding: 10px;
+    }
+
+    .section-body {
+        background-color: white;
+        margin-top: 10px;
+        color: #273746;
+        text-align: left;
+        text-decoration: double;
+        padding: 10px;
+    }
+    .section-content .section-head {
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .section-content {
+        padding: 10px;
+        text-align: center;
+        background-color: white;
+        color: white;
+        margin: 10px;
+        padding: 15px;
+        border-radius: 0.5em;
+    }
+
+    .section-head.close {
+        color: black;
+        padding-top: inherit;
+    }
+
+    .icons {
+        float: right;
+        font-size: 2em;
+        padding-right: 1%
+    }
+</style>
+
+<form>
+    <div id="div_form" class="container-fluid"
+         style="background-color: white;
+                margin: 25px;
+                border-radius: 0.5em;
+                display:none;
+                ">
+        <div class="row">
+            <div>
+                <div class="section-content wb">
+                    <div class="section-head">
+                        <span style="font-size: 1.3em">Client Details</span>
+                        <span class="icons"><a class="dropdown-link" href="javascript:void(0);"> <i class="zmdi zmdi-swap-vertical"></i></a></span>
+                    </div>
+                    <div class="section-body collapse">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.FamilyID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.ClientDetails.FamilyID, Model.ClientFamilyList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.FamilyID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.Title)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.ClientDetails.Title, Model.TitleList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.Title, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.FirstName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @if (Model.ClientDetails.ID != 0)
+                                    {
+                                        @Html.TextBoxFor(e => e.ClientDetails.FirstName, htmlAttributes: new { @class = "form-control", @id = "txt_name", @onkeypress = "AlphabetsOnly(event)", @readonly = true })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(e => e.ClientDetails.FirstName, htmlAttributes: new { @class = "form-control", @id = "txt_name", @onkeypress = "AlphabetsOnly(event)" })
+                                    }
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.FirstName)
+                                    @Html.HiddenFor(e => e.ClientDetails.ID, htmlAttributes: new { @class = "form-control", @id = "hdn_id" })
+                                    <span class="txt_name field-validation-error" style="color:red"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.MiddleName)
+                                    @Html.TextBoxFor(e => e.ClientDetails.MiddleName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphabetsOnly(event)" })
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.MiddleName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.LastName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.ClientDetails.LastName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphabetsOnly(event)" })
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.LastName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.ShortName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.ClientDetails.ShortName, htmlAttributes: new { @class = "form-control", @onkeypress = "AlphabetsWithSpace(event)" })
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.ShortName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.IntroducerID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.ClientDetails.IntroducerID, Model.EmployeeList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.IntroducerID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.OccupationID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.ClientDetails.OccupationID, Model.OccupationList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.OccupationID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.PAN)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.ClientDetails.PAN, htmlAttributes: new { @maxlength = "10", @class = "form-control", id="txt_pan" })
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.PAN)
+                                    <span class="pan-error field-validation-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.Gender)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.ClientDetails.Gender, Model.GenderList ?? new List<SelectListItem>(), Constants.Select, new { @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.Gender, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.DOB)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.ClientDetails.DOB, htmlAttributes: new { @class = "date form-control", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.DOB)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.MobileNumber)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.ClientDetails.MobileNumber, htmlAttributes: new { @maxlength = "10", @class = "form-control", @onkeypress = "NumbersOnly(event)", id = "txt_mobile" })
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.MobileNumber)
+                                    <span class="mobile-error field-validation-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.ClientDetails.EmailId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.ClientDetails.EmailId, htmlAttributes: new { @class = "form-control", @onkeypress = "Email(event)", id = "txt_email" })
+                                    @Html.ValidationMessageFor(e => e.ClientDetails.EmailId)
+                                    <span class="email-error field-validation-error"></span>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        @Html.DisplayNameFor(e => e.ClientDetails.IsActive)
+                                        <label>
+                                            @Html.CheckBoxFor(e => e.ClientDetails.IsActive, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-content wb">
+                    <div class="section-head">
+                        <span style="font-size: 1.3em">Personal Details</span>
+                        <span class="icons"><a class="dropdown-link" href="javascript:void(0);"> <i class='zmdi zmdi-swap-vertical'></i></a></span>
+                    </div>
+                    <div class="section-body collapse" id="div_personal">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.MotherFirstName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.PersonalDetails.MotherFirstName, htmlAttributes: new { @class = "form-control" })
+                                    @Html.HiddenFor(e => e.PersonalDetails.ID)
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.MotherFirstName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.MotherLastName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.PersonalDetails.MotherLastName, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.MotherLastName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.MaidenFirstName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.PersonalDetails.MaidenFirstName, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.MaidenFirstName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.MaidenLastName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.PersonalDetails.MaidenLastName, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.MaidenLastName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.SpouseOrFatherFirstName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.PersonalDetails.SpouseOrFatherFirstName, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.SpouseOrFatherFirstName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.SpouseOrFatherLastName)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.PersonalDetails.SpouseOrFatherLastName, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.SpouseOrFatherLastName)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.MaritalStatusID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.PersonalDetails.MaritalStatusID, Model.MaterialList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.MaritalStatusID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.AnnualIncomeID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.PersonalDetails.AnnualIncomeID, Model.AnnualIncomeList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.AnnualIncomeID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.CitizenshipID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.PersonalDetails.CitizenshipID, Model.CitizenShipList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.CitizenshipID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.EducationID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.PersonalDetails.EducationID, Model.EducationList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.EducationID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.ResidentialStatusID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.PersonalDetails.ResidentialStatusID, Model.ResidentalList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.ResidentialStatusID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.CommodityTradeClassificationID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.PersonalDetails.CommodityTradeClassificationID, Model.TradingExperienceList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.CommodityTradeClassificationID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.PersonalDetails.TradingExperienceID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.PersonalDetails.TradingExperienceID, Model.TradingExperienceList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.PersonalDetails.TradingExperienceID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.DisplayNameFor(e => e.PersonalDetails.IsPoliticalExperienceID)
+                                            @Html.CheckBoxFor(e => e.PersonalDetails.IsPoliticalExperienceID, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-content wb">
+                    <div class="section-head">
+                        <span style="font-size: 1.3em">Equity Brokers Detail</span>
+                        <span class="icons"><a class="dropdown-link" href="javascript:void(0);"> <i class='zmdi zmdi-swap-vertical'></i></a></span>
+                    </div>
+                    <div class="section-body collapse" id="div_brokers">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.EquityBrokerDetails.BrokerID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.EquityBrokerDetails.BrokerID, Model.BrokersList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.EquityBrokerDetails.BrokerID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.EquityBrokerDetails.BrokerUCC)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.EquityBrokerDetails.BrokerUCC, htmlAttributes: new { @maxlength = "10", @class = "form-control", @onkeypress = "AlphaNumeric(event)" })
+                                    @Html.HiddenFor(e => e.EquityBrokerDetails.ID)
+                                    @Html.ValidationMessageFor(e => e.EquityBrokerDetails.BrokerUCC)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.EquityBrokerDetails.EffectiveFrom)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.EquityBrokerDetails.EffectiveFrom, htmlAttributes: new { @id = "txt_brokers_effectivefrom", @class = "form-control", @readonly = true })
+                                    @Html.ValidationMessageFor(e => e.EquityBrokerDetails.EffectiveFrom)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.EquityBrokerDetails.EffectiveTo)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.EquityBrokerDetails.EffectiveTo, htmlAttributes: new { @id = "txt_brokers_effectiveto", @class = "form-control", @readonly = true })
+                                    @Html.ValidationMessageFor(e => e.EquityBrokerDetails.EffectiveTo)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-content wb">
+                    <div class="section-head">
+                        <span style="font-size: 1.3em;">Address Details</span>
+                        <span class="icons"><a class="dropdown-link" href="javascript:void(0);"> <i class='zmdi zmdi-swap-vertical'></i></a></span>
+                    </div>
+                    <div class="section-body collapse" id="div_current_address">
+                        <div class="row">
+                            <div class="row" style="margin: 0em 1em 1em 1em;">
+                                <span style="font-size: 1.3em;">Current Address Details</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Current_CountryID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.AddressDetails.Current_CountryID, Model.CountryList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_current_country", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Current_CountryID, "", new { @style = "margin-top: 0px !important;" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Current_StateID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.AddressDetails.Current_StateID, Model.StateList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_current_state", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Current_StateID, "", new { @style = "margin-top: 0px !important;" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Current_CityID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.AddressDetails.Current_CityID, Model.CityList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_current_city", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Current_CityID, "", new { @style = "margin-top: 0px !important;" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Current_AddressLine1)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextAreaFor(e => e.AddressDetails.Current_AddressLine1, htmlAttributes: new { @onkeypress = "AlphabetsWithSpaceWithSpecial(event)", @id = "txt_current_address1", @class = "form-control" })
+                                        @Html.HiddenFor(e => e.AddressDetails.Current_ID)
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Current_AddressLine1)
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Current_AddressLine2)
+                                        @Html.TextAreaFor(e => e.AddressDetails.Current_AddressLine2, htmlAttributes: new { @onkeypress = "AlphabetsWithSpaceWithSpecial(event)", @id = "txt_current_address2", @class = "form-control" })
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Current_AddressLine2)
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Current_PinCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.AddressDetails.Current_PinCode, htmlAttributes: new { @maxlength = "6", @onkeypress = "NumbersOnly(event)", @id = "txt_current_pincode", @class = "form-control" })
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Current_PinCode)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="row" style="margin: 0em 1em 1em 1em;">
+                                <span style="font-size: 1.3em;">Corresponding Address Detail</span>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="input-group">
+                                        <div class="checkbox">
+                                            <label>
+                                                Same as Permanent Address
+                                                <input type="checkbox" id="chk_sameaspermanent" />
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Coressponding_CountryID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.AddressDetails.Coressponding_CountryID, Model.CountryList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_corresponding_country", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Coressponding_CountryID, "", new { @style = "margin-top: 0px !important;" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Coressponding_StateID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.AddressDetails.Coressponding_StateID, Model.StateList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_corresponding_state", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Coressponding_StateID, "", new { @style = "margin-top: 0px !important;" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Coressponding_CityID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.DropDownListFor(e => e.AddressDetails.Coressponding_CityID, Model.CityList ?? new List<SelectListItem>(), Constants.Select, new { @id = "ddl_corresponding_city", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                        <br style="line-height:1em" />
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Coressponding_CityID, "", new { @style = "margin-top: 0px !important;" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Coressponding_AddressLine1)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextAreaFor(e => e.AddressDetails.Coressponding_AddressLine1, htmlAttributes: new { @onkeypress = "AlphabetsWithSpaceWithSpecial(event)", @id = "txt_corresponding_address1", @class = "form-control" })
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Coressponding_AddressLine1)
+                                        @Html.HiddenFor(e => e.AddressDetails.Coressponding_ID)
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Coressponding_AddressLine2)
+                                        @Html.TextAreaFor(e => e.AddressDetails.Coressponding_AddressLine2, htmlAttributes: new { @onkeypress = "AlphabetsWithSpaceWithSpecial(event)", @id = "txt_corresponding_address2", @class = "form-control" })
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Coressponding_AddressLine2)
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                    <div class="form-group is-empty">
+                                        @Html.DisplayNameFor(e => e.AddressDetails.Coressponding_PinCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                        @Html.TextBoxFor(e => e.AddressDetails.Coressponding_PinCode, htmlAttributes: new { @maxlength = "6", @onkeypress = "NumbersOnly(event)", @id = "txt_corresponding_pincode", @class = "form-control" })
+                                        @Html.ValidationMessageFor(e => e.AddressDetails.Coressponding_PinCode)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-content wb">
+                    <div class="section-head">
+                        <span style="font-size: 1.3em">Bank Details</span>
+                        <span class="icons"><a class="dropdown-link" href="javascript:void(0);"> <i class='zmdi zmdi-swap-vertical'></i></a></span>
+                    </div>
+                    <div class="section-body collapse" id="div_bank_details">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.BankDetails.AccountType)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.BankDetails.AccountType, Model.BankAccountTypeList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.BankDetails.AccountType, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.BankDetails.BranchMICRCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.BankDetails.BranchMICRCode, Model.MICRList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.BankDetails.BranchMICRCode, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.BankDetails.IFSCCode)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.BankDetails.IFSCCode, htmlAttributes: new { @maxlength = "11",@onkeypress = "AlphaNumeric(event)", @class = "form-control" })
+                                    @Html.ValidationMessageFor(e => e.BankDetails.IFSCCode)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.BankDetails.BankAccountNumber)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.BankDetails.BankAccountNumber, htmlAttributes: new { @maxlength = "13", @onkeypress = "NumbersOnly(event)", @id = "txt_bank_accountnumber", @class = "form-control" })
+                                    @Html.HiddenFor(e => e.BankDetails.ID)
+                                    @Html.ValidationMessageFor(e => e.BankDetails.BankAccountNumber)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-content wb">
+                    <div class="section-head">
+                        <span style="font-size: 1.3em">Depository Details</span>
+                        <span class="icons"><a class="dropdown-link" href="javascript:void(0);"> <i class='zmdi zmdi-swap-vertical'></i></a></span>
+                    </div>
+                    <div class="section-body collapse" id="div_depository">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.DepositryDetails.DpId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.DepositryDetails.DpId, Model.DepositoryList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.DepositryDetails.DpId, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.DepositryDetails.AccountNumber)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.DepositryDetails.AccountNumber, htmlAttributes: new { @maxlength = "13", @onkeypress = "NumbersOnly(event)", @class = "form-control" })
+                                    @Html.HiddenFor(e => e.DepositryDetails.ID)
+                                    @Html.ValidationMessageFor(e => e.DepositryDetails.AccountNumber)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.DepositryDetails.EffectiveFrom)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.DepositryDetails.EffectiveFrom, htmlAttributes: new { @id = "txt_dp_effectivefrom", @class = "form-control", @readonly = true })
+                                    @Html.ValidationMessageFor(e => e.DepositryDetails.EffectiveFrom)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.DepositryDetails.EffectiveTo)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.DepositryDetails.EffectiveTo, htmlAttributes: new { @id = "txt_dp_effectiveto", @class = "form-control", @readonly = true })
+                                    @Html.ValidationMessageFor(e => e.DepositryDetails.EffectiveTo)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-content wb">
+                    <div class="section-head">
+                        <span style="font-size: 1.3em">Secondary Contact Details</span>
+                        <span class="icons"><a class="dropdown-link" href="javascript:void(0);"> <i class='zmdi zmdi-swap-vertical'></i></a></span>
+                    </div>
+                    <div class="section-body collapse" id="div_secondary_contact_details">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.SecondaryContactDetails.Relationship)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.SecondaryContactDetails.Relationship, Model.RelationShipList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.SecondaryContactDetails.Relationship, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.SecondaryContactDetails.Name)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.SecondaryContactDetails.Name, htmlAttributes: new { @onkeypress = "AlphabetsWithSpace(event)", @class = "form-control" })
+                                    @Html.HiddenFor(e => e.SecondaryContactDetails.ID)
+                                    @Html.ValidationMessageFor(e => e.SecondaryContactDetails.Name)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.SecondaryContactDetails.MobileNumber)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.SecondaryContactDetails.MobileNumber, htmlAttributes: new { @maxlength = "10", @onkeypress = "NumbersOnly(event)", @class = "form-control" })
+                                    @Html.ValidationMessageFor(e => e.SecondaryContactDetails.MobileNumber)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.SecondaryContactDetails.EmailId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.SecondaryContactDetails.EmailId, htmlAttributes: new { @onkeypress = "Email(event)", @class = "form-control" })
+                                    @Html.ValidationMessageFor(e => e.SecondaryContactDetails.EmailId)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.SecondaryContactDetails.EffectiveFrom)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.SecondaryContactDetails.EffectiveFrom, htmlAttributes: new { @id = "txt_sec_details_effectivefrom", @class = "form-control", @readonly = true })
+                                    @Html.ValidationMessageFor(e => e.SecondaryContactDetails.EffectiveFrom)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.SecondaryContactDetails.EffectiveTo)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.SecondaryContactDetails.EffectiveTo, htmlAttributes: new { @id = "txt_sec_details_effectiveto", @class = "form-control", @readonly = true })
+                                    @Html.ValidationMessageFor(e => e.SecondaryContactDetails.EffectiveTo)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-content wb">
+                    <div class="section-head">
+                        <span style="font-size: 1.3em">Mapping Details</span>
+                        <span class="icons"><a class="dropdown-link" href="javascript:void(0);"> <i class='zmdi zmdi-swap-vertical'></i></a></span>
+                    </div>
+                    <div class="section-body collapse" id="div_mappingdetails">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.MappingDetails.ModelId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.MappingDetails.ModelId, Model.ModelList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.MappingDetails.ModelId, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.MappingDetails.BranchId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.MappingDetails.BranchId, Model.BranchList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.MappingDetails.BranchId, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.MappingDetails.SBUID)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.MappingDetails.SBUID, Model.SBUList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.MappingDetails.SBUID, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        @Html.DisplayNameFor(e => e.MappingDetails.HeadOfFamily)
+                                        <label>
+                                            @Html.CheckBoxFor(e => e.MappingDetails.HeadOfFamily, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.MappingDetails.RMId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.MappingDetails.RMId, Model.EmployeeList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.MappingDetails.RMId, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.MappingDetails.SecondaryRMId)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.DropDownListFor(e => e.MappingDetails.SecondaryRMId, Model.EmployeeList ?? new List<SelectListItem>(), Constants.Select, new { @id = "", @class = "form-control select2-container--material", @style = "width: 100%" })
+                                    <br style="line-height:1em" />
+                                    @Html.ValidationMessageFor(e => e.MappingDetails.SecondaryRMId, "", new { @style = "margin-top: 0px !important;" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                <div class="input-group">
+                                    <div class="checkbox">
+                                        @Html.DisplayNameFor(e => e.MappingDetails.KYCValid)
+                                        <label>
+                                            @Html.CheckBoxFor(e => e.MappingDetails.KYCValid, htmlAttributes: new { @class = "checkbox" })
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.MappingDetails.KYCFormNo)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.MappingDetails.KYCFormNo, htmlAttributes: new { @maxlength = "10", @onkeypress = "AlphaNumeric(event)", @class = "form-control" })
+                                    @Html.HiddenFor(e => e.MappingDetails.ID)
+                                    @Html.ValidationMessageFor(e => e.MappingDetails.KYCFormNo)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.MappingDetails.EffectiveFrom)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.MappingDetails.EffectiveFrom, htmlAttributes: new { @id = "txt_mapping_effectivefrom", @class = "form-control", @readonly = true })
+                                    @Html.ValidationMessageFor(e => e.MappingDetails.EffectiveFrom)
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                <div class="form-group is-empty">
+                                    @Html.DisplayNameFor(e => e.MappingDetails.EffectiveTo)<span style="color: red"><strong>&nbsp;*</strong></span>
+                                    @Html.TextBoxFor(e => e.MappingDetails.EffectiveTo, htmlAttributes: new { @id = "txt_mapping_effectiveto", @class = "form-control", @readonly = true })
+                                    @Html.ValidationMessageFor(e => e.MappingDetails.EffectiveTo)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           
+            </div>
+        </div>
+        <div class="row">
+            <div class="text-center" style="margin:10px;">
+
+                @if (Model.ClientDetails.ID != 0)
+                {
+                    <button type="button" data-toggle="modal" data-target="#confirmation_modal" class="btn btn-success">
+                        Update
+                    </button>
+                }
+                else
+                {
+                    <button type="button" data-toggle="modal" data-target="#confirmation_modal" class="btn btn-success ">
+                        Add
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="Reset()">
+                        Reset
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal fade" id="confirmation_modal" tabindex="-1" role="dialog" style="display:none" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-1" style="margin-left:30px">
+                        <div class="leftside">
+                            <span style="margin:9px" class="zmdi zmdi zmdi-check-circle zmdi-hc-2x"></span>
+                        </div>
+                    </div>
+                    <div class="col-sm-9" style="margin-top: -8px;">
+                        <div class="rightside">
+                            <h2> Are you to proceed this details ?</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <button type="button" onclick="SaveData()" class="btn btn-info btn-flat">Yes</button>
+                        <button type="button" data-dismiss="modal" class="btn btn-info btn-flat">No</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts{
+    <script>
+
+          //  Save the Data.
+        function SaveData() {
+            $('#confirmation_modal').slideUp("slow").modal("hide");
+
+            var AcountsValid = true;
+            var rows = $("#div_accountdetails").find(".addmore-accounts");
+            var ucc_valid = false;
+            var accounttype_valid = false;
+            $.each(rows, function () {
+                Index = $(this).find(".hdn-index").val();
+                var AccountTypeID = $(this).find(".ddl-accounttype"),
+                    UCC_ID = $(this).find(".txt-ucc"),
+                    AccountType = $(AccountTypeID).val(),
+                    UCC = $(UCC_ID).val();
+                if (UCC == null || UCC == 'undefined' || UCC == '') {
+                    $("#span_ucc_" + Index).empty().text("Please enter the Account Type").show();
+                    ucc_valid = false;
+                }
+                else {
+                    $("#span_ucc_" + Index).empty().hide();
+                    ucc_valid = true;
+                }
+                if (AccountType == null || AccountType == 'undefined' || AccountType == '') {
+                    $("#span_accounttype_" + Index).empty().text("Please select the Account Type").show();
+                    accounttype_valid = false;
+                }
+                else {
+                    $("#span_accounttype_" + Index).empty().hide();
+                    accounttype_valid = true;
+                }
+                if (!accounttype_valid || !ucc_valid)
+                    return AcountsValid = false;
+                else
+                    AcountsValid = true;
+            });
+
+            if ($("form").valid() && AcountsValid && valid_mobile && valid_email && valid_pan)
+            {
+                    $(".chart-loader").show();
+                    $("#div_form").hide();
+                    var object = $("form").serializeArray();
+                    var json = { AccountDetails: []};
+                    $.each(object, function () {
+                        if (json[this.name] == undefined) {
+                            json[this.name] = this.value;
+                        }
+                    });
+                    postAjax("@Url.Action("AddUpdate")", json,
+                        function (response) {
+                            if (response.status == "S")
+                            {
+                                $('#confirmation_modal').slideUp("slow").modal("hide");
+                                var rows = $("#div_accountdetails").find(".addmore-accounts");
+                                var AccoutDetailsData = { model: [] };
+                                $.each(rows, function () {
+                                    var AccountDetails = {};
+                                    AccountDetails["ClientID"] = response.data;
+                                    AccountDetails["ID"] = $(this).find(".hdn-accountdetails-id").val();
+                                    AccountDetails["AccountTypeID"] = $(this).find(".ddl-accounttype").val();
+                                    AccountDetails["UCC"] = $(this).find(".txt-ucc").val();
+                                    AccoutDetailsData.model.push(AccountDetails);
+                                });
+                                if (AccoutDetailsData.model.length > 0)
+                                {
+                                    postAjax("@Url.Action("AddUpdateAccountDetails")", AccoutDetailsData, function (result) {
+                                        if (result.status == "S") {
+                                            window.localStorage.setItem("Message", response.message);
+                                            window.location.href = "@Url.Action("SummaryView")";
+                                        }
+                                        else {
+                                            show_notification(result.message);
+                                            $(".chart-loader").hide();
+                                            $("#div_form").show();
+                                        }
+                                    }, function () {
+                                            show_notification("Something went wrong");
+                                            $(".chart-loader").hide();
+                                            $("#div_form").show();
+                                    });
+                                }
+                                else {
+                                    show_notification("Something went wrong");
+                                    $(".chart-loader").hide();
+                                    $("#div_form").show();
+                                }
+                            }
+                            else {
+                                show_notification("Something went wrong");
+                                $(".chart-loader").hide();
+                                $("#div_form").show();
+                            }
+                        }, function (request) {
+                            show_notification("Somethimg went wrong");
+                            $(".chart-loader").hide();
+                            $("#div_form").show();
+                        })
+                } else {
+                    show_notification("Form was not valid please check the data.");
+                    $(".chart-loader").hide();
+                    $("#div_form").show();
+                }
+        }
+
+        var option = "<option value=''>--Select--</option>";
+        var count = 1;
+        var valid_mobile = true,
+            valid_pan = true,
+            valid_email = true;
+        $(document).ready(function () {
+            $(".chart-loader").hide();
+            $("#div_form").show();
+            $(".collapse").show();
+            $(".date").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                minDate: '-70Y',
+                maxDate: '-18Y',
+                yearRange: "-70:-18",
+                dateFormat: "dd M yy"
+            });
+            $("a.dropdown-link").click(function (e) {
+                e.preventDefault();
+                var $div = $(this).parents(".section-head").next('.collapse');
+                var $icon = $(this).children('.icons').first("zmdi zmdi-swap-vertical");
+
+                $(".icons").not($icon).text();
+                if ($div.is(":visible")) {
+                    $div.hide();
+                } else {
+                    $div.show();
+                }
+            });
+            DateRange('#txt_sec_details_effectivefrom', '#txt_sec_details_effectiveto');
+            DateRange('#txt_dp_effectivefrom', '#txt_dp_effectiveto');
+            DateRange('#txt_mapping_effectivefrom', '#txt_mapping_effectiveto');
+            DateRange('#txt_brokers_effectivefrom', '#txt_brokers_effectiveto');
+
+            $("#txt_pan").on("change", function () {
+                getAjax("@Url.Action("IsExsits")", { Data: $(this).val(), Flag: "PAN" }, function (response) {
+                    if (response.status == "S") {
+                        $(".pan-error").empty().text(response.message).show();
+                        valid_mobile = false;
+                    } else {
+                        $(".pan-error").hide();
+                        valid_mobile = true;
+                    }
+                }); 
+            });
+
+            $("#txt_mobile").on("change", function () {
+                getAjax("@Url.Action("IsExsits")", { Data: $(this).val(), Flag: "Mobile" }, function (response) {
+                    if (response.status == "S") {
+                        $(".mobile-error").empty().text(response.message).show();
+                        valid_mobile = false;
+                    } else {
+                        $(".mobile-error").hide();
+                        valid_mobile = true;
+                    }
+                });
+            });
+
+            $("#txt_email").on("change", function () {
+                 getAjax("@Url.Action("IsExsits")", { Data: $(this).val(), Flag: "Email" }, function (response) {
+                     if (response.status == "S") {
+                         $(".email-error").empty().text(response.message).show();
+                         valid_mobile = false;
+                     } else {
+                         $(".email-error").hide();
+                         valid_mobile = true;
+                     }
+                });
+            });
+
+        });
+
+        $(document).on("click", "#btn_addmore", function () {
+            $(".chart-loader").show();
+            $("#div_form").css("filter", "opacity(30%)");
+            var AcountsValid = true;
+            var rows = $("#div_accountdetails").find(".addmore-accounts");
+            var ucc_valid = false;
+            var accounttype_valid = false;
+            $.each(rows, function () {
+                Index = $(this).find(".hdn-index").val();
+                var AccountTypeID = $(this).find(".ddl-accounttype"),
+                    UCC_ID = $(this).find(".txt-ucc"),
+                    AccountType = $(AccountTypeID).val(),
+                    UCC = $(UCC_ID).val();
+                if (UCC == null || UCC == 'undefined' || UCC == '') {
+                    $("#span_ucc_" + Index).empty().text("Please enter the Account Type").show();
+                    ucc_valid = false;
+                }
+                else {
+                    $("#span_ucc_" + Index).empty().hide();
+                    ucc_valid = true;
+                }
+                if (AccountType == null || AccountType == 'undefined' || AccountType == '') {
+                    $("#span_accounttype_" + Index).empty().text("Please select the Account Type").show();
+                    accounttype_valid = false;
+                }
+                else {
+                    $("#span_accounttype_" + Index).empty().hide();
+                    accounttype_valid = true;
+                }
+                if (!accounttype_valid || !ucc_valid)
+                    return AcountsValid = false;
+                else
+                    AcountsValid = true;
+            });
+
+            if (AcountsValid) {
+                  count += 1;
+                  getAjax("@Url.Action("GetAccountsPartialView")", { Flag: count }, function (response) {
+                      if (response != null) {
+                          $("#div_accountdetails").last(".addmore-accounts").append(response);
+                          $(".chart-loader").hide();
+                          $("#div_form").css("filter", "opacity(100%)");
+                      }
+                  }, null);
+            }
+            $(".chart-loader").show();
+            $("#div_form").css("filter", "opacity(100%)");
+        });
+
+        //function AccountValid() {
+        //    var rows = $("#div_accountdetails").find(".addmore-accounts");
+        //    var ucc_valid = false;
+        //    var accounttype_valid = false;
+        //    $.each(rows, function () {
+        //        Index = $(this).find(".hdn-index").val();
+        //        var AccountTypeID = $(this).find(".ddl-accounttype"),
+        //            UCC_ID = $(this).find(".txt-ucc"),
+        //            AccountType = $(AccountTypeID).val(),
+        //            UCC = $(UCC_ID).val();
+        //        if (UCC == null || UCC == 'undefined' || UCC == '') {
+        //            $("#span_ucc_" + Index).empty().text("Please enter the Account Type").show();
+        //            ucc_valid = false;
+        //        }
+        //        else {
+        //            $("#span_ucc_" + Index).empty().hide();
+        //            ucc_valid = true;
+        //        }
+        //        if (AccountType == null || AccountType == 'undefined' || AccountType == '') {
+        //            $("#span_accounttype_" + Index).empty().text("Please select the Account Type").show();
+        //            accounttype_valid = false;
+        //        }
+        //        else {
+        //            $("#span_accounttype_" + Index).empty().hide();
+        //            accounttype_valid = true;
+        //        }
+        //        if (!accounttype_valid || !ucc_valid)
+        //            return  false;
+        //        else
+        //            return  true;
+        //    });
+        //}
+
+        $(document).on("click", ".btn-close", function () {
+            $(".chart-loader").show();
+            $("#div_form").css("filter", "opacity(30%)");
+            var row = $("#div_accountdetails").find(".addmore-accounts");
+            $row = $(this).parents(".addmore-accounts");
+            if (row.length == 1)
+            {
+                count += 1;
+                getAjax("@Url.Action("GetAccountsPartialView")", { Flag: 1 }, function (response) {
+                    if (response != null) {
+                        $row.remove();
+                        $(".chart-loader").hide();
+                        $("#div_form").css("filter", "opacity(100%)");
+                        $("#div_accountdetails").append(response);
+                    }
+                    else {
+                        $(".chart-loader").hide();
+                        $("#div_form").css("filter", "opacity(100%)");
+                    }
+                }, null);
+            }
+            else {
+                $(".chart-loader").hide();
+                $("#div_form").css("filter", "opacity(100%)");
+                $row.remove();
+            }
+
+        });
+
+        $("#chk_sameaspermanent").click(function () {
+            if ($(this).prop("checked") == true) {
+                $(".chart-loader").show();
+                $("#div_form").css("filter", "opacity(30%)");
+                $("#txt_corresponding_address1").val($("#txt_current_address1").val());
+                $("#txt_corresponding_address2").val($("#txt_current_address2").val());
+                $("#txt_corresponding_pincode").val($("#txt_current_pincode").val());
+                $("#ddl_corresponding_country").val($("#ddl_current_country").val()).trigger("change");
+                FillStates($("#ddl_corresponding_country").val());
+            }
+        })
+
+        $("#ddl_corresponding_country").change(function () {
+
+            getAjax("@Url.Action("FillStateList")", { CountryID: $(this).val() }, function (response) {
+                if (response.status = "S") {
+                    $("#ddl_corresponding_city").empty().append(option);
+                    $.each(response.data, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                $("#ddl_corresponding_state").empty().append(option);
+                    option = "<option value=''>--Select--</option>";
+                }
+            });
+        });
+
+        $("#ddl_current_country").change(function () {
+
+            getAjax("@Url.Action("FillStateList")", { CountryID: $(this).val() }, function (response) {
+                if (response.status = "S") {
+                    $("#ddl_current_city").empty().append(option);
+                    $.each(response.data, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                }
+                $("#ddl_current_state").empty().append(option);
+                option = "<option value=''>--Select--</option>";
+            });
+        });
+
+        $("#ddl_corresponding_state").change(function () {
+            getAjax("@Url.Action("FillCityList")", { StateID: $(this).val() }, function (response) {
+                if (response.status = "S") {
+                    $.each(response.data, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                }
+                $("#ddl_corresponding_city").empty().append(option);
+                option = "<option value=''>--Select--</option>";
+            });
+
+        });
+
+        $("#ddl_current_state").change(function () {
+            getAjax("@Url.Action("FillCityList")", { StateID: $(this).val() }, function (response) {
+                if (response.status = "S") {
+                    $.each(response.data, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                }
+                $("#ddl_current_city").empty().append(option);
+                option = "<option value=''>--Select--</option>";
+            });
+
+        });
+
+        function FillStates(countryID) {
+            getAjax("@Url.Action("FillStateList")", { CountryID: countryID }, function (response) {
+                if (response.status = "S") {
+                    $("#ddl_corresponding_city").empty().append(option);
+                    $.each(response.data, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                    $("#ddl_corresponding_state").empty().append(option);
+                    $("#ddl_corresponding_state").val($("#ddl_current_state").val());
+                    option = "<option value=''>--Select--</option>";
+                    FillCities($("#ddl_corresponding_state").val());
+
+                }
+            });
+         }
+
+        function FillCities(stateID) {
+            getAjax("@Url.Action("FillCityList")", { StateID: stateID }, function (response) {
+                if (response.status = "S") {
+                    $("#ddl_corresponding_city").empty().append(option);
+                    $.each(response.data, function (index, val) {
+                        option += "<option value='" + val.value + "'>" + val.text + " </option>"
+                    });
+                }
+                $("#ddl_corresponding_city").empty().append(option);
+                $("#ddl_corresponding_city").val($("#ddl_current_city").val()).trigger("change");
+                option = "<option value=''>--Select--</option>";
+                $(".chart-loader").hide();
+                $("#div_form").css("filter", "opacity(100%)");
+            }, function () {
+                        $("#ddl_corresponding_city").empty().append(option);
+            });
+        }
+
+        function DateRange(From, To) {
+            var dateFormat = "dd M yy",
+                from = $(From)
+                    .datepicker({
+                        defaultDate: "+0d",
+                        changeMonth: true,
+                        numberOfMonths: 1,
+                        dateFormat: "dd M yy"
+                    })
+                    .on("change", function () {
+                        to.datepicker("option", "minDate", getDate(this));
+                    }),
+                to = $(To).datepicker({
+                    defaultDate: "+0d",
+                    changeMonth: true,
+                    numberOfMonths: 1,
+                    dateFormat: "dd M yy"
+                })
+                    .on("change", function () {
+                        from.datepicker("option", "maxDate", getDate(this));
+                    });
+
+            function getDate(element) {
+                var date;
+                try {
+                    date = $.datepicker.parseDate(dateFormat, element.value);
+                } catch (error) {
+                    date = null;
+                }
+                return date;
+            }
+        }
+
+        @*function IsExsits(flag) {
+            debugger;
+            getAjax("@Url.Action("IsExsits")", { Data: $(this).val(),Flag:flag }, function (response) {
+                if (response.status == "S") {
+                    switch (Flag) {
+                        case "Mobile":
+                            $(".mobile-error").empty().text(response.message).show();
+                            valid_mobile = false;
+                            break;
+                        case "PAN":
+                            $(".pan-error").empty().text(response.message).show();
+                            valid_pan = false;
+                            break;
+                        case "Email":
+                            $(".email-error").empty().text(response.message).show();
+                            valid_email = false;
+                            break;
+                    }
+                }
+                else {
+                    switch (Flag) {
+                        case "Mobile":
+                            $(".mobile-error").hide();
+                            valid_mobile = true;
+                            break;
+                        case "PAN":
+                            $(".pan-error").hide();
+                            valid_pan = true;
+                            break;
+                        case "Email":
+                            $(".email-error").hide();
+                            valid_email = true;
+                            break;
+                    }
+                }
+            });
+        }*@
+                
+    </script>
+}

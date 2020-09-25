@@ -1,0 +1,181 @@
+﻿@media screen and (width:1024px) {
+    .asset-Manufacturer {
+        height: 402px !important;
+    }
+
+    .asset-devices {
+        height: 402px !important;
+    }
+
+
+    .card-applications {
+        height: 429px !important;
+    }
+
+    .card-assettype {
+        height: 429px !important;
+    }
+
+    .assetdevices-chart {
+        margin-left: -30px;
+    }
+
+    .applications-usagechart {
+        margin-left: -30px;
+    }
+
+
+    .company-summary {
+        height: 401px !important;
+    }
+
+    .companywise-summary {
+        margin-top: -6em !important;
+    }
+
+
+    .asset-management {
+        height: 401px !important;
+    }
+
+    .hardware-usage {
+        height: 340px !important;
+    }
+
+    .inactive-devices {
+        height: 370px !important;
+    }
+
+    .locationwise-asset {
+        height: 370px !important;
+    }
+
+    .active-devices {
+        height: 360px !important;
+    }
+
+    .active-devicesbody {
+        margin-top: -25px !important;
+    }
+
+
+}
+
+@media screen and (width:1440px) {
+    .asset-devices {
+        height: 402px !important;
+    }
+
+    .card-applications {
+        height: 407px !important;
+    }
+
+    .card-assettype {
+        height: 407px !important;
+    }
+
+    .assetdevices-chart {
+        margin-left: -30px;
+    }
+
+    .applications-usagechart {
+        margin-left: -30px;
+    }
+
+    .company-summary {
+        height: 424px !important;
+    }
+
+    .companywise-summary {
+        margin-top: -6em !important;
+    }
+
+    .hardware-usage {
+        height: 365px !important;
+    }
+
+    .inactive-devices {
+        height: 395px !important;
+    }
+
+    .locationwise-asset {
+        height: 395px !important;
+    }
+
+    .active-devices {
+        height: 390px !important;
+    }
+
+    .active-devicesbody {
+        margin-top: -10px !important;
+    }
+
+}
+
+
+@media screen and (width:1920px) {
+    .card-applications {
+        height: 406px !important;
+    }
+
+    .company-summary {
+        height: 579px !important;
+    }
+
+    .asset-management {
+        height: 578px !important;
+    }
+
+    .inactive-devices {
+        height: 470px !important;
+    }
+}
+
+@media screen and (width:2560px) {
+    .assetdevices-chart {
+        display: block;
+        position: relative;
+        width: 67% !important;
+        margin-left: 100px;
+    }
+
+    .card-applications {
+        height: 402px !important;
+    }
+
+    .card-assettype {
+        height: 405px !important;
+    }
+
+    .applications-usagechart {
+        display: block;
+        position: relative;
+        width: 68% !important;
+        margin-left: 100px;
+    }
+
+    .company-summary {
+        height: 796px !important;
+    }
+
+    .hardware-usage {
+        height: 525px !important;
+    }
+
+    .inactive-devices {
+        height: 555px !important;
+    }
+
+    .locationwise-asset {
+        height: 555px !important;
+    }
+
+    .active-devices {
+        height: 550px !important;
+    }
+
+    .active-devicesbody {
+        margin-top: 100px !important;
+    }
+
+}
